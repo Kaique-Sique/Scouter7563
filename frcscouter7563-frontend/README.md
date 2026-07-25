@@ -1,184 +1,257 @@
 <div align="center">
 
+<img src="https://raw.githubusercontent.com/Kaique-Sique/FRCScouter7563-Frontend/main/frcscouter7563-frontend/public/logo.png" alt="Scouter7563" width="90" onerror="this.style.display='none'" />
+
 # Scouter7563
 
-**Scouting web application for FRC Team 7563 (Megazord)**
+<sub>Internal scouting platform for FRC Team 7563 — Megazord</sub>
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.2-black?logo=next.js)](https://nextjs.org)
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](../LICENSE)
+<br />
 
-[Overview](#overview) •
-[Tech Stack](#tech-stack) •
-[Getting Started](#getting-started) •
-[Project Structure](#project-structure) •
-[Routing](#routing) •
-[Scripts](#available-scripts) •
-[Contributing](#contributing)
+<a href="https://nextjs.org"><img src="https://img.shields.io/badge/Next.js-16.2-000000?style=for-the-badge&logo=next.js&logoColor=white" /></a>
+<a href="https://react.dev"><img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=101010" /></a>
+<a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white" /></a>
+<a href="https://tailwindcss.com"><img src="https://img.shields.io/badge/Tailwind-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" /></a>
+
+<br />
+
+<img src="https://img.shields.io/github/last-commit/Kaique-Sique/FRCScouter7563-Frontend?style=flat-square&color=8957e5" />
+<img src="https://img.shields.io/github/issues/Kaique-Sique/FRCScouter7563-Frontend?style=flat-square&color=orange" />
+<img src="https://img.shields.io/github/license/Kaique-Sique/FRCScouter7563-Frontend?style=flat-square&color=yellow" />
+<img src="https://img.shields.io/badge/status-active_development-2ea043?style=flat-square" />
+<img src="https://img.shields.io/badge/team-FRC_7563-blue?style=flat-square" />
+<img src="https://img.shields.io/badge/made%20in-Jundiaí%2C_BR-009c3b?style=flat-square" />
+
+<br /><br />
+
+<a href="#-overview">Overview</a> ·
+<a href="#-features">Features</a> ·
+<a href="#-tech-stack">Tech Stack</a> ·
+<a href="#-getting-started">Getting Started</a> ·
+<a href="#-project-structure">Structure</a> ·
+<a href="#-contributing">Contributing</a>
 
 </div>
 
----
+<br />
 
-## Overview
+## 📡 Overview
 
-Scouter7563 is the frontend for **FRCScouter7563**, an internal scouting platform built by [Team 7563 — Megazord](https://megazord7563.com.br) for the *FIRST* Robotics Competition. It gives the team a single place to browse events, teams, and matches, and to collect in-house scouting data during competition.
+<table>
+<tr>
+<td>
 
-The interface is organized around five top-level sections:
+Scouter7563 is the single place Team 7563 uses to browse events, teams and matches, and to collect scouting data live during competition. Built as a Next.js app with a fully internal TypeScript data layer — no external backend to deploy or babysit at the field.
 
-| Section | Route | Purpose |
-|---|---|---|
-| Dashboard | `/` | Current event overview, live stats, and upcoming matches |
-| Events | `/events` | Browse events grouped by competition week |
-| Teams | `/teams` | Browse and inspect FRC teams |
-| Matches | `/matches` | Match details and per-team scouting views |
-| Scout | `/scout` | Start and fill out a new scouting entry |
+</td>
+</tr>
+</table>
 
-This repository contains **only the frontend**. It is designed to consume the [FRCScouter7563 backend](https://github.com/Kaique-Sique) (FastAPI + PostgreSQL), which proxies [The Blue Alliance](https://www.thebluealliance.com/) data and stores the team's own scouting records.
+<br />
 
----
+## ✨ Features
 
-## Tech Stack
+<table>
+<tr>
+<td width="33%" valign="top" align="center">
+<h3>🏟️</h3>
+<b>Events</b>
+<br />
+<sub>Browse every event by competition week, drill into results, teams and rankings</sub>
+</td>
+<td width="33%" valign="top" align="center">
+<h3>🤖</h3>
+<b>Teams</b>
+<br />
+<sub>Full team profiles with stats, history and event participation</sub>
+</td>
+<td width="33%" valign="top" align="center">
+<h3>📋</h3>
+<b>Live Scouting</b>
+<br />
+<sub>Fast in-match forms for auto, teleop, endgame and notes</sub>
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top" align="center">
+<h3>📊</h3>
+<b>Match Insights</b>
+<br />
+<sub>Per-team match breakdowns, timelines and custom metrics</sub>
+</td>
+<td width="33%" valign="top" align="center">
+<h3>⚡</h3>
+<b>Turbopack</b>
+<br />
+<sub>Instant HMR during development, fast production builds</sub>
+</td>
+<td width="33%" valign="top" align="center">
+<h3>🎨</h3>
+<b>Tailwind 4</b>
+<br />
+<sub>CSS-first theming, consistent design tokens across the app</sub>
+</td>
+</tr>
+</table>
 
-| Layer | Technology |
-|---|---|
-| Framework | [Next.js 16](https://nextjs.org) (App Router, Turbopack) |
-| UI Library | [React 19](https://react.dev) |
-| Language | [TypeScript 5](https://www.typescriptlang.org) |
-| Styling | [Tailwind CSS 4](https://tailwindcss.com) (CSS-first configuration) |
-| Icons | [lucide-react](https://lucide.dev), [react-icons](https://react-icons.github.io/react-icons) |
-| Charts | [Recharts](https://recharts.org) |
-| Linting | [ESLint 9](https://eslint.org) with `eslint-config-next` |
+<br />
 
----
+## 🧱 Tech Stack
 
-## Getting Started
+<div align="center">
 
-### Prerequisites
+<img src="https://img.shields.io/badge/Framework-Next.js_16-black?style=flat-square&logo=next.js" />
+<img src="https://img.shields.io/badge/UI-React_19-61DAFB?style=flat-square&logo=react&logoColor=101010" />
+<img src="https://img.shields.io/badge/Lang-TypeScript_5-3178C6?style=flat-square&logo=typescript&logoColor=white" />
+<img src="https://img.shields.io/badge/Style-Tailwind_4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" />
+<br />
+<img src="https://img.shields.io/badge/Icons-lucide--react-f56565?style=flat-square&logo=lucide" />
+<img src="https://img.shields.io/badge/Icons-react--icons-e91e63?style=flat-square" />
+<img src="https://img.shields.io/badge/Charts-Recharts-8884d8?style=flat-square" />
+<img src="https://img.shields.io/badge/Lint-ESLint_9-4B32C3?style=flat-square&logo=eslint&logoColor=white" />
+<br />
+<img src="https://img.shields.io/badge/Data-TBA_API_v3-003b6f?style=flat-square" />
+<img src="https://img.shields.io/badge/Storage-PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white" />
 
-- [Node.js](https://nodejs.org) 20 or later
-- npm (or yarn / pnpm / bun)
-- A running instance of the [FRCScouter7563 backend](https://github.com/Kaique-Sique) for live data (optional in development — pages fall back gracefully when the API is unreachable)
+</div>
 
-### Installation
+<br />
+
+> [!NOTE]
+> The old FastAPI backend is **retired**. TBA proxying and scouting persistence now live inside this repo as an internal TypeScript layer (`src/lib/api`) — server-only, nothing exposed over HTTP.
+
+<br />
+
+## 🚀 Getting Started
+
+<table>
+<tr><td width="28"><b>1</b></td><td>
 
 ```bash
 git clone https://github.com/Kaique-Sique/FRCScouter7563-Frontend.git
 cd FRCScouter7563-Frontend/frcscouter7563-frontend
+```
+
+</td></tr>
+<tr><td><b>2</b></td><td>
+
+```bash
 npm install
 ```
 
-### Environment Variables
-
-Create a `.env.local` file in the project root:
+</td></tr>
+<tr><td><b>3</b></td><td>
 
 ```bash
-# Base URL of the FRCScouter7563 backend API
-NEXT_PUBLIC_API_URL=http://localhost:8000
+cp .env.exemple .env.local   # fill in TBA_KEY + DB_* — see table below
 ```
 
-| Variable | Required | Default | Description |
-|---|---|---|---|
-| `NEXT_PUBLIC_API_URL` | No | `http://localhost:8000` | Base URL used to fetch teams, events, and matches from the backend |
-
-### Running the App
+</td></tr>
+<tr><td><b>4</b></td><td>
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser. The app hot-reloads as you edit files under `src/`.
+</td></tr>
+</table>
 
----
+<div align="center">→ open <a href="http://localhost:3000"><code>localhost:3000</code></a></div>
 
-## Available Scripts
+<br />
+
+<details>
+<summary><b>Environment variables</b></summary>
+<br />
+
+| Variable | Required | Purpose |
+|:--|:--:|:--|
+| `TBA_KEY` | ✅ | [TBA](https://www.thebluealliance.com/account) read key |
+| `TBA_BASE_URL` | ✅ | `https://www.thebluealliance.com/api/v3` |
+| `DB_NAME` | ✅ | PostgreSQL database |
+| `DB_USER` | ✅ | PostgreSQL user |
+| `DB_PASSWORD` | ✅ | PostgreSQL password |
+| `DB_HOST` | ✅ | PostgreSQL host |
+| `DB_PORT` | ✅ | PostgreSQL port |
+
+</details>
+
+<details>
+<summary><b>Available scripts</b></summary>
+<br />
 
 | Command | Description |
-|---|---|
-| `npm run dev` | Start the development server with Turbopack |
-| `npm run build` | Create an optimized production build |
-| `npm run start` | Serve the production build |
-| `npm run lint` | Run ESLint across the project |
+|:--|:--|
+| `npm run dev` | Dev server with Turbopack |
+| `npm run build` | Production build |
+| `npm run start` | Serve production build |
+| `npm run lint` | ESLint across the project |
 
----
+</details>
 
-## Project Structure
+<br />
+
+## 🗂️ Project Structure
+
+<details open>
+<summary><b>Expand tree</b></summary>
 
 ```
 frcscouter7563-frontend/
-├── public/                    # Static assets (logo, icons)
+├── public/                 # Static assets
 └── src/
-    ├── app/                   # Next.js App Router — routes and layouts
-    │   ├── page.tsx           # Dashboard (/)
-    │   ├── layout.tsx         # Root layout
-    │   ├── globals.css        # Tailwind entry point and theme tokens
-    │   ├── teams/              # Teams list and team detail routes
-    │   └── scout/              # Scouting flow (match/team selection + forms)
-    │
-    ├── components/
-    │   ├── AppLayout.tsx      # Shell combining Header + Sidebar + content
-    │   ├── Header.tsx
-    │   ├── Sidebar.tsx
-    │   ├── cards/              # Reusable stat, match, and team cards
-    │   ├── dashboard/          # Dashboard-only widgets (event selector, matches list)
-    │   ├── scout/               # Scouting flow components (match/alliance selectors)
-    │   ├── team/                # Team profile (header, sidebar, stats, charts)
-    │   └── ui/                  # Low-level UI primitives (progress bars, badges)
-    │
+    ├── app/                 # Routes & layouts (App Router)
+    ├── components/          # cards · dashboard · scout · team · ui
     ├── lib/
-    │   └── api/                 # Typed API client functions (e.g. `getTeam`)
-    │
-    ├── types/                   # Shared TypeScript types and enums
-    └── utils/                   # Formatting and helper functions
+    │   ├── api/tba/         # Internal TBA API v3 client
+    │   └── config/          # Typed .env access
+    ├── types/               # Shared types, incl. types/tba
+    └── utils/               # Formatting & helpers
 ```
 
----
+</details>
 
-## Routing
+<br />
 
-```
-Home (/)
-│
-├── Events (/events)
-│   └── Event (/events/{event_key})
-│       ├── Results
-│       ├── Teams
-│       ├── Rankings
-│       ├── Insights
-│       └── Matches
-│           └── Match (/matches/{match_key})
-│               └── Team Scout (/matches/{match_key}/{team_number})
-│
-├── Teams (/teams)
-│   └── Team (/teams/{team_key})
-│
-├── Matches (/matches)
-│   └── Match (/matches/{match_key})
-│
-└── Scout (/scout)
-    └── Match (/scout/{match_key})
-        └── Team (/scout/{match_key}/{team_number})
-```
+## 🧭 Routing
 
-A full breakdown of every route, its purpose, and its expected contents is documented in the [top-level architecture guide](../README.md).
+<div align="center">
 
-> **Note:** the `/scout/2025/auto`, `/scout/2025/teleop`, and `/scout/2025/pit` routes are temporary placeholders. They will be merged into a single, unified scouting form.
+| Route | Description |
+|:--|:--|
+| `/` | Dashboard — current event, live stats |
+| `/events` → `/events/{key}` | Event browser & details |
+| `/teams` → `/teams/{key}` | Team directory & profiles |
+| `/matches/{key}` → `/{key}/{team}` | Match & per-team scout view |
+| `/scout` → `/scout/{match}/{team}` | New scouting entry |
 
----
+</div>
 
-## Contributing
+<div align="center"><sub>Full route map: <a href="../README.md">top-level architecture guide</a></sub></div>
 
-This is an internal tool for Team 7563, but contributions from team members are welcome:
+<br />
 
-1. Create a branch from `main`.
-2. Keep components typed and colocate route-specific components under `src/components/<feature>`.
-3. Run `npm run lint` and `npm run build` before opening a pull request.
-4. Open a pull request describing the change.
+## 🤝 Contributing
 
----
+<table>
+<tr><td>
 
-## License
+Internal tool for Team 7563 — teammates welcome:
 
-Distributed under the MIT License. See [`LICENSE`](../LICENSE) for details.
+1. Branch off `main`
+2. Keep components typed, colocated under `src/components/<feature>`
+3. `npm run lint && npm run build` before opening a PR
+4. Open the PR with a short description
+
+</td></tr>
+</table>
+
+<br />
+
+<div align="center">
+
+<img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" />
+
+<sub>Built by <a href="https://megazord7563.com.br">Team 7563 — Megazord</a> · Jundiaí, SP</sub>
+
+</div>
