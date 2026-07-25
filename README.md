@@ -128,8 +128,8 @@ Scouter7563 is the single place Team 7563 uses to browse events, teams and match
 <tr><td width="28"><b>1</b></td><td>
 
 ```bash
-git clone https://github.com/Kaique-Sique/FRCScouter7563-Frontend.git
-cd FRCScouter7563-Frontend/frcscouter7563-frontend
+git clone https://github.com/Kaique-Sique/Scouter7563.git
+cd FRCScouter7563-Frontend/scouter7563
 ```
 
 </td></tr>
