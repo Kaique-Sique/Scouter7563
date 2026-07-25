@@ -15,17 +15,17 @@ import {
 
 interface TeamHeaderProps {
     team: {
-        team_number: number | string;
-        nickname: string;
-        organization?: string;
-        city?: string;
-        country?: string;
-        rookie_year?: number;
-        website?: string;
-        instagram?: string;
-        youtube?: string;
-        banner?: string;
-        avatar?: string;
+        team_number: number | null;
+        nickname: string | null;
+        organization?: string | null;
+        city?: string | null;
+        country?: string | null;
+        rookie_year?: number | null;
+        website?: string | null;
+        instagram?: string | null;
+        youtube?: string | null;
+        banner?: string | null;
+        avatar?: string | null;
     };
 }
 
@@ -40,7 +40,7 @@ export default function TeamHeader({
                 {team.banner ? (
                     <Image
                         src={team.banner}
-                        alt={team.nickname}
+                        alt={team.nickname ?? "team banner"}
                         fill
                         className="object-cover"
                     />
@@ -62,7 +62,7 @@ export default function TeamHeader({
                         {team.avatar ? (
                             <Image
                                 src={team.avatar}
-                                alt={team.nickname}
+                                alt={team.nickname ?? "team logo"}
                                 fill
                                 className="object-cover"
                             />
