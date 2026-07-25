@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/Kaique-Sique/FRCScouter7563-Frontend/main/frcscouter7563-frontend/public/logo.png" alt="Scouter7563" width="90" onerror="this.style.display='none'" />
+<img src="https://raw.githubusercontent.com/Kaique-Sique/FRCScouter7563-Frontend/main/scouter7563/public/logo.png" alt="Scouter7563" width="90" onerror="this.style.display='none'" />
 
 # Scouter7563
 
