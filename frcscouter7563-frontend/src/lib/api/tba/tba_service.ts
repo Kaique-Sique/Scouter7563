@@ -36,7 +36,7 @@ import { tbaConfig } from "@/lib/config/config";
  * Thrown when the request fails or the API returns a non-success
  * HTTP status code.
  */
-async function _get<T>(endpoint: string): Promise<T> {
+export async function _get<T>(endpoint: string): Promise<T> {
 
     const response = await fetch(
         `${tbaConfig.BASE_URL}${endpoint}`,
