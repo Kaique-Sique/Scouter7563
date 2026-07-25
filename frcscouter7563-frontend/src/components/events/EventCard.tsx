@@ -16,7 +16,7 @@ export default function EventCard({
 
     return (
         <Link
-            href={`/event/${event.event_key}`}
+            href={`/events/${event.event_key}`}
             className="
                 group
                 flex
