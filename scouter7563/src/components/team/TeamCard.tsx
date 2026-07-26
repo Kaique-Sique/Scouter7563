@@ -41,9 +41,7 @@ export default function TeamCard({
         p-5
         transition-all
         duration-200
-        hover:-translate-y-0.5
-        hover:border-sky-500/40
-        hover:bg-slate-800/70
+        hover:border-slate-700
       "
     >
       {/* Left */}
@@ -137,7 +135,7 @@ export default function TeamCard({
             />
 
             <span className="text-xs font-medium text-sky-300">
-              Registered
+              Scouted
             </span>
 
           </div>

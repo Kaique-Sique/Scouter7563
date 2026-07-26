@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Star, MapPin, CalendarDays } from "lucide-react";
+import { Star, MapPin, Users, CalendarDays } from "lucide-react";
 import { EventListItem } from "@/types/events";
 
 interface EventCardProps {
@@ -68,6 +68,12 @@ export default function EventCard({
                     <span className="flex items-center gap-2">
                         <CalendarDays size={15} />
                         {event.startDate} - {event.endDate}
+                    </span>
+
+
+                    <span className="flex items-center gap-2">
+                        <Users size={15} />
+                        {event.teams} Teams
                     </span>
 
                 </div>
