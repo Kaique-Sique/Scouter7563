@@ -50,3 +50,7 @@ export interface TBATeamMedia {
   details?: Record<string, unknown>;
   preferred?: boolean;
 }
+
+export interface TBAAvatarDetails {
+  base64Image: string;
+}

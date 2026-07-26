@@ -23,14 +23,21 @@ function findSocialUrl(media: TBATeamMedia[], type: string): string | undefined 
   return SOCIAL_URL_BUILDERS[type]?.(entry.foreign_key);
 }
 
+
 function organizationFormater(organization: string) {
     if (!organization) return organization;
 
-    return organization
-        .split("/")
+    const sponsors = organization.split("/");
+
+    const visible = sponsors
         .slice(0, 2)
-        .join(" / ")
-        .replace("&", " & ");
+        .join(" / ");
+
+    visible.replace("&", " & ")
+
+    return sponsors.length > 2
+        ? `${visible} +${sponsors.length - 2}`
+        : visible;
 }
 
 /**
@@ -50,11 +57,12 @@ function organizationFormater(organization: string) {
  */
 export async function getTeam(team_key: string): Promise<Team | null> {
   try {
-    // Fetch the team profile and its social media links in parallel —
-    // they're independent requests, no reason to wait on one first.
-    const [team, socialMedia] = await Promise.all([
+    // Fetch the team profile, its social media links, and its avatar in
+    // parallel — three independent TBA requests, no reason to chain them.
+    const [team, socialMedia, avatar] = await Promise.all([
       tba.getTeam(team_key),
       tba.getTeamSocialMedia(team_key),
+      tba.getTeamAvatar(team_key, 2025),
     ]);
 
     return {
@@ -83,11 +91,9 @@ export async function getTeam(team_key: string): Promise<Team | null> {
       tba: `https://www.thebluealliance.com/team/${team.team_number}`,
       first: `https://frc-events.firstinspires.org/team/${team.team_number}`,
 
-      // NOTE: this URL pattern is not an officially documented TBA
-      // endpoint and may not resolve for every team/year. The reliable
-      // way to get an avatar is `tba.getTeamMediaByYear(team_key, year)`
-      // and filtering for `type === "avatar"` (returns base64 image data).
-      avatar: `https://www.thebluealliance.com/avatar/2026/frc${team.team_number}.png`,
+      // Real avatar pulled from TBA's media endpoint (base64 -> data URI).
+      // `null` when the team has no avatar set for that year.
+      avatar: avatar ?? undefined,
     };
   } catch {
     // Team not found, invalid key, or TBA request failed — the caller

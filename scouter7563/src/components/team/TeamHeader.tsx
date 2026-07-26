@@ -42,6 +42,7 @@ export default function TeamHeader({
                         src={team.banner}
                         alt={team.nickname ?? "team banner"}
                         fill
+                        unoptimized
                         className="object-cover"
                     />
                 ) : (
@@ -60,11 +61,10 @@ export default function TeamHeader({
                     <div className="relative h-32 w-32 overflow-hidden rounded-2xl border-4 border-slate-900 bg-slate-800">
 
                         {team.avatar ? (
-                            <Image
+                            <img
                                 src={team.avatar}
                                 alt={team.nickname ?? "team logo"}
-                                fill
-                                className="object-cover"
+                                className="h-full w-full object-cover"
                             />
                         ) : (
                             <div className="flex h-full items-center justify-center text-4xl font-bold">
