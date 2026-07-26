@@ -7,9 +7,11 @@ import {TeamListItem} from "@/types/team"
 
 interface TeamCardProps {
     team: TeamListItem;
+    onToggleFavorite?: (teamKey: string) => void;
 }
 export default function TeamCard({
   team,
+  onToggleFavorite,
 }: TeamCardProps) {
   return (
     <Link
@@ -91,12 +93,45 @@ export default function TeamCard({
 
       <div className="flex shrink-0 flex-col items-end gap-3">
 
-        {team.favorite && (
+        {/* Favorite */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onToggleFavorite?.(
+              team.team_key
+                ? team.team_key
+                : " ? ");
+          }}
+          className={[
+            "flex",
+            "h-10",
+            "w-10",
+            "shrink-0",
+            "items-center",
+            "justify-center",
+            "rounded-xl",
+            "border",
+            "transition-all",
+            "duration-200",
+
+            team.favorite
+              ? "border-amber-400 bg-amber-500/10 text-amber-400"
+              : "border-slate-700 text-slate-400 hover:border-amber-400 hover:bg-amber-500/10 hover:text-amber-400",
+          ].join(" ")}
+        >
+
           <Star
             size={18}
-            className="fill-yellow-400 text-yellow-400"
+            fill={
+              team.favorite
+                ? "currentColor"
+                : "none"
+            }
           />
-        )}
+
+        </button>
 
         {team.epa !== undefined && (
           <div className="text-right">
