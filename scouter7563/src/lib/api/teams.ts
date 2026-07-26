@@ -114,45 +114,31 @@ export async function getTeam(team_key: string): Promise<Team | null> {
  * TypeScript does NOT treat as equivalent to `null`. Every `?? undefined`
  * below is bridging that gap.
  *
- * TBA paginates `/teams/{year}/{page_num}` at 500 teams per page, returning
- * `[]` once `page_num` goes past the last page. We walk every page (0, 1,
- * 2, ...) until that happens, so the caller gets the full team list for the
- * year in one call — this is also what lets `/teams` split into sections
- * of 500 teams each (see `groupTeamsByBatch`).
- *
  * @returns The mapped `TeamListItem[]`, or `null` if the team doesn't exist / the
  * TBA request fails (network error, TBA outage, etc).
  */
-export async function getTeamListItem(): Promise<TeamListItem[] | null> {
+export async function getTeamListItem(pageNum: number): Promise<TeamListItem[] | null> {
   try {
+    // Fetch the team profile, and avatar
+    const teamsTba = await tba.getTeamsByYearSimple(2025, pageNum);
+
     const teamList: TeamListItem[] = [];
 
-    // Teto de segurança pra nunca dar loop infinito caso a TBA nunca
-    // devolva `[]` por algum motivo — bem acima de qualquer quantidade
-    // real de páginas hoje (~4-5 pra ~2000 times/ano).
-    const MAX_PAGES = 50;
+    for (const team of teamsTba) {
+      teamList.push({
+        team_key: team.key,
+        team_number: team.team_number,
+        nickname: team.nickname,
+        city: team.city,
+        country: team.country,
 
-    for (let pageNum = 0; pageNum < MAX_PAGES; pageNum++) {
-      const teamsTba = await tba.getTeamsByYearSimple(2025, pageNum);
+        //epa?: 256.7,
 
-      if (!teamsTba || teamsTba.length === 0) break;
+        //registered?: boolean | null;
+        //favorite?: boolean | null;
 
-      for (const team of teamsTba) {
-        teamList.push({
-          team_key: team.key,
-          team_number: team.team_number,
-          nickname: team.nickname,
-          city: team.city,
-          country: team.country,
-
-          //epa?: 256.7,
-
-          //registered?: boolean | null;
-          //favorite?: boolean | null;
-
-          avatar: await tba.getTeamAvatar(team.key, 2025),
-        });
-      }
+        avatar: await tba.getTeamAvatar(team.key, 2025),
+      });
     }
 
     return teamList;

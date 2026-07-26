@@ -35,20 +35,13 @@ export default function TeamsPageClient({
     initialSections,
 }: TeamsPageClientProps) {
 
-    // objeto mutável com o elemento DOM de cada seção (id -> HTMLElement).
-    // Como o número de seções é dinâmico, cada TeamSection se registra aqui
-    // via callback ref.
     const sectionElsRef =
         useRef<Record<string, HTMLElement | null>>({});
 
-    // estado inicializado com o que já veio pronto do servidor —
-    // sem fetch nenhum aqui dentro
+        
     const [teams, setTeams] =
         useState<Record<string, TeamListItem[]>>(initialTeams);
 
-    // as seções em si (id/label/order) já vêm prontas do servidor; só o
-    // conteúdo de cada uma (visibleSectionsData) muda no cliente conforme
-    // busca/favoritos/ordenação
     const sections = initialSections;
 
     const [favoriteOnly, setFavoriteOnly] =

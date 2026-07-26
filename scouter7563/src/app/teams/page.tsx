@@ -7,7 +7,7 @@ import { groupTeamsByBatch } from "@/utils/groupTeamsByBatch";
 // cliente — buscar no browser sempre resultaria em lista vazia).
 export default async function TeamsPage() {
 
-    const list = await getTeamListItem();
+    const list = await getTeamListItem(0);
 
     // grouped/sections são montados dinamicamente a partir dos dados: a cada
     // 500 times uma nova seção nasce (ou some, se não houver dados) — igual
