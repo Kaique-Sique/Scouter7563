@@ -15,17 +15,17 @@ import {
 
 interface TeamHeaderProps {
     team: {
-        team_number: number | string;
-        nickname: string;
-        organization?: string;
-        city?: string;
-        country?: string;
-        rookie_year?: number;
-        website?: string;
-        instagram?: string;
-        youtube?: string;
-        banner?: string;
-        avatar?: string;
+        team_number: number | null;
+        nickname: string | null;
+        organization?: string | null;
+        city?: string | null;
+        country?: string | null;
+        rookie_year?: number | null;
+        website?: string | null;
+        instagram?: string | null;
+        youtube?: string | null;
+        banner?: string | null;
+        avatar?: string | null;
     };
 }
 
@@ -40,8 +40,9 @@ export default function TeamHeader({
                 {team.banner ? (
                     <Image
                         src={team.banner}
-                        alt={team.nickname}
+                        alt={team.nickname ?? "team banner"}
                         fill
+                        unoptimized
                         className="object-cover"
                     />
                 ) : (
@@ -60,11 +61,10 @@ export default function TeamHeader({
                     <div className="relative h-32 w-32 overflow-hidden rounded-2xl border-4 border-slate-900 bg-slate-800">
 
                         {team.avatar ? (
-                            <Image
+                            <img
                                 src={team.avatar}
-                                alt={team.nickname}
-                                fill
-                                className="object-cover"
+                                alt={team.nickname ?? "team logo"}
+                                className="h-full w-full object-cover"
                             />
                         ) : (
                             <div className="flex h-full items-center justify-center text-4xl font-bold">

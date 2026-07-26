@@ -9,6 +9,7 @@
 
 import { _get } from "./tba_service";
 import {
+  TBAAvatarDetails,
   TBAAward,
   TBADistrictListItem,
   TBAEventSimple,
@@ -155,3 +156,26 @@ export const getTeamAwardsByYear = (teamKey: string, year: number) =>
 /** GET `/team/{team_key}/media/{year}` — photos, CAD, videos, etc. */
 export const getTeamMediaByYear = (teamKey: string, year: number) =>
   _get<TBATeamMedia[]>(`/team/${teamKey}/media/${year}`);
+
+/**
+ * Fetches `/team/{team_key}/media/{year}`, filters it down to the single
+ * `type === "avatar"` entry (TBA can return several media items per year —
+ * CAD renders, photos, etc. — but only one is the avatar), and turns its
+ * embedded base64 image into a ready-to-use `data:` URI.
+ *
+ * There is no public "avatar URL" endpoint on TBA — the image bytes only
+ * exist inside this response, base64-encoded under `details.base64Image`.
+ *
+ * @returns A `data:image/png;base64,...` string, or `null` if the team
+ * has no avatar set for that year.
+ */
+export const getTeamAvatar = async (
+  teamKey: string,
+  year: number
+): Promise<string | null> => {
+  const media = await getTeamMediaByYear(teamKey, year);
+  const avatar = media.find((item) => item.type === "avatar");
+  const base64Image = (avatar?.details as TBAAvatarDetails | undefined)?.base64Image;
+
+  return base64Image ? `data:image/png;base64,${base64Image}` : null;
+};

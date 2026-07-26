@@ -14,17 +14,16 @@ import {
 
 interface TeamSidebarProps {
   team: {
-    organization?: string;
-    city?: string;
-    country?: string;
-    rookie_year?: number;
-    members?: number;
+    organization?: string | null;
+    city?: string | null;
+    country?: string | null;
+    rookie_year?: number | null;
 
     website?: string;
     tba?: string;
     first?: string;
-    instagram?: string;
-    youtube?: string;
+    instagram?: string | null;
+    youtube?: string | null;
   };
 }
 
@@ -50,12 +49,11 @@ function InfoRow({
     </div>
   );
 }
-
 function LinkButton({
   href,
   label,
 }: {
-  href?: string;
+  href?: string | null;
   label: string;
 }) {
   if (!href) return null;
@@ -89,7 +87,7 @@ export default function TeamSidebar({
           <InfoRow
             icon={<Building2 size={18} />}
             label="Organization"
-            value={team.organization}
+            value={team.organization ?? " ?"}
           />
 
           <InfoRow
@@ -105,18 +103,13 @@ export default function TeamSidebar({
           <InfoRow
             icon={<Calendar size={18} />}
             label="Rookie Year"
-            value={team.rookie_year}
+            value={team.rookie_year ?? " ?"}
           />
 
-          <InfoRow
-            icon={<Users size={18} />}
-            label="Members"
-            value={team.members}
-          />
         </div>
 
       </div>
-
+      
       {/* Links */}
       <div className="rounded-2xl border border-slate-800 bg-slate-900 p-5">
 
