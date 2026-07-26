@@ -13,6 +13,10 @@ interface TeamFiltersProps {
     visibleSections: TeamSectionMeta[];
     favorite: boolean;
     onToggleFavorite: () => void;
+    // avisa o pai qual lote foi escolhido — necessário porque, com a
+    // renderização em janela, o lote clicado pode ainda não estar montado
+    // no DOM (então ainda não existe em `sectionEls`)
+    onSelectSection?: (id: string) => void;
 }
 
 export default function TeamFilters({
@@ -20,6 +24,7 @@ export default function TeamFilters({
     visibleSections,
     favorite,
     onToggleFavorite,
+    onSelectSection,
 }: TeamFiltersProps) {
 
     const visibleIds = visibleSections.map((section) => section.id);
@@ -43,6 +48,10 @@ export default function TeamFilters({
         useRef<Record<string, HTMLButtonElement | null>>({});
 
     function scrollToSection(id: string) {
+
+        // deixa o pai carregar o lote se ele ainda não estiver montado
+        // (renderização em janela — ver TeamsPageClient)
+        onSelectSection?.(id);
 
         const section = sectionEls.current[id];
 
@@ -71,7 +80,6 @@ export default function TeamFilters({
 
         const padding = 12;
 
-        // botão está escondido para esquerda
         if (buttonLeft < scrollLeft) {
             container.scrollTo({
                 left: buttonLeft - padding,
@@ -79,7 +87,6 @@ export default function TeamFilters({
             });
         }
 
-        // botão está escondido para direita
         else if (buttonRight > scrollRight) {
             container.scrollTo({
                 left: buttonRight - container.clientWidth + padding,
