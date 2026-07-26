@@ -22,7 +22,7 @@ export interface Team { // /teams/[team_key]
 }
 
 
-export interface TeamsListItem { // /teams
+export interface TeamListItem { // /teams
     team_key: string | null;
     team_number: number | null;
     nickname: string | null;

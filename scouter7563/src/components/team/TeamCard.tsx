@@ -3,10 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Star, ShieldCheck } from "lucide-react";
-import { TeamsListItem } from "@/types/team";
+import { TeamListItem } from "@/types/team";
 
 
-export default function TeamCard(team: TeamsListItem) {
+export default function TeamCard(team: TeamListItem) {
   return (
     <Link
       href={`/teams/${team.team_key}`}
