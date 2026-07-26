@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { Star, MapPin, Users, CalendarDays } from "lucide-react";
-import type { EventListItem } from "@/types/events";
+import type { EventItem } from "@/components/events/types";
 
 interface EventCardProps {
-    event: EventListItem;
+    event: EventItem;
     onToggleFavorite?: (eventKey: string) => void;
 }
 
@@ -87,11 +87,7 @@ export default function EventCard({
                 onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    onToggleFavorite?.(
-                        event.event_key 
-                        ? event.event_key
-                        : ""
-                    );
+                    onToggleFavorite?.(event.event_key);
                 }}
                 className={[
                     "flex",
