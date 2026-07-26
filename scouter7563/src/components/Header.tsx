@@ -3,12 +3,37 @@
 import Image from "next/image";
 import { Menu, Search, User } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface HeaderProps {
   onMenuClick: () => void;
 }
 
 export default function Header({ onMenuClick }: HeaderProps) {
+
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+
+  function handleSearch() {
+    const value = query.trim();
+
+    if (!value) return;
+
+    // Número puro ("254") ou já com o prefixo ("frc254") -> vai direto
+    // pra página do time, que já existe em /teams/[team_key].
+    const teamKeyMatch = /^(?:frc)?(\d+)$/i.exec(value);
+
+    if (teamKeyMatch) {
+      router.push(`/teams/frc${teamKeyMatch[1]}`);
+      return;
+    }
+
+    // Qualquer outra coisa (nome de time, evento, etc) -> manda pra
+    // listagem de times com a busca já preenchida na URL.
+    router.push(`/teams?q=${encodeURIComponent(value)}`);
+  }
+
   return (
     <header className="fixed top-0 left-0 z-30 h-14 w-full border-b border-slate-800 bg-slate-950">
       <div className="flex h-full items-center justify-between px-5 lg:px-6">
@@ -56,17 +81,31 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
         {/* Center */}
         <div className="hidden w-full max-w-xl px-8 md:block">
-          <div className="flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-900 px-4 py-2 transition-colors focus-within:border-blue-500">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch();
+            }}
+            className="flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-900 px-4 py-2 transition-colors focus-within:border-blue-500"
+          >
 
-            <Search className="h-5 w-5 text-slate-400" />
+            <button
+              type="submit"
+              aria-label="Search"
+              className="shrink-0 text-slate-400 transition-colors hover:text-white"
+            >
+              <Search className="h-5 w-5" />
+            </button>
 
             <input
               type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
               placeholder="Search teams, events or matches..."
               className="w-full bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none"
             />
 
-          </div>
+          </form>
         </div>
 
 
