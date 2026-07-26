@@ -12,7 +12,15 @@
  * |- PASSWORD
  * |- HOST
  * |- PORT
- * 
+ *
+ * NOTE: values are exposed as lazy getters, not plain properties.
+ * A plain `const dbConfig = { NAME: env("DB_NAME"), ... }` evaluates
+ * every env() call the moment this module is imported — so any route
+ * that imports config.ts (even indirectly, even if it only needs
+ * tbaConfig) would crash at build/import time if DB_* vars are missing.
+ * With getters, `env()` only runs when someone actually reads
+ * `dbConfig.NAME`, so unrelated routes don't pay for env vars they
+ * never touch.
  */
 
 
@@ -35,14 +43,14 @@ function env(name: string): string {
 }
 
 export const dbConfig = {
-    NAME: env("DB_NAME"),
-    USER: env("DB_USER"),
-    PASSWORD: env("DB_PASSWORD"),
-    HOST: env("DB_HOST"),
-    PORT: env("DB_PORT")
+    get NAME(): string { return env("DB_NAME"); },
+    get USER(): string { return env("DB_USER"); },
+    get PASSWORD(): string { return env("DB_PASSWORD"); },
+    get HOST(): string { return env("DB_HOST"); },
+    get PORT(): string { return env("DB_PORT"); },
 };
 
 export const tbaConfig = {
-    KEY: env("TBA_KEY"),
-    BASE_URL: env("TBA_BASE_URL")
+    get KEY(): string { return env("TBA_KEY"); },
+    get BASE_URL(): string { return env("TBA_BASE_URL"); },
 };

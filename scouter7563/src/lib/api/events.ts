@@ -16,8 +16,13 @@ export async function getEvent(event_key: string): Promise<Event | null> { retur
  */
 function WeekCalculator(event: TBAEvent): string | undefined {
     if (!event) return undefined;
-    
-    if (!event.week) {return event.event_type_string}
+
+    // event.week é 0-indexed (semana 0 = Week 1), então `0` é um valor
+    // válido e não pode ser tratado como falsy — senão eventos da Week 1
+    // caem incorretamente no event_type_string.
+    if (event.week === null || event.week === undefined) {
+        return event.event_type_string;
+    }
     return `${event.week}`;
 }
 
@@ -63,4 +68,3 @@ export async function getEventList(): Promise<EventListItem[] | null> {
         return null;
     }
 }
-
