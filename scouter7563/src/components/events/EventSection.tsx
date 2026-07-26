@@ -2,13 +2,15 @@ import EventCard from "@/components/events/EventCard";
 import { EventListItem } from "@/types/events";
 
 interface EventSectionProps {
+    id: string;
     title: string;
     events: EventListItem[] | null;
-    sectionRef?: React.RefObject<HTMLElement | null>;
+    sectionRef?: (el: HTMLElement | null) => void;
     onToggleFavorite?: (eventKey: string) => void;
 }
 
 export default function EventSection({
+    id,
     title,
     events,
     sectionRef,
@@ -18,7 +20,7 @@ export default function EventSection({
     return (
         <section
             ref={sectionRef}
-            id={title.toLowerCase().replace(" ", "")}
+            id={id}
             className="scroll-mt-60 space-y-4"
         >
 

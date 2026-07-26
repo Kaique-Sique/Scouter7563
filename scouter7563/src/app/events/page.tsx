@@ -1,8 +1,6 @@
 import EventsPageClient from "./EventsPageClient";
 import { getEventList } from "@/lib/api/events";
 import { groupEventsByWeek } from "@/utils/groupEventsByWeek";
-import type { FilterType } from "@/components/events/EventFilters";
-import type { EventListItem } from "@/types/events";
 
 // Server Component: roda no servidor, então tem acesso a TBA_KEY / TBA_BASE_URL
 // (essas env vars não têm prefixo NEXT_PUBLIC_, logo não existem no bundle do
@@ -11,20 +9,17 @@ export default async function EventsPage() {
 
     const list = await getEventList();
 
-    const initialEvents: Record<FilterType, EventListItem[]> = list
+    // grouped/sections são montados dinamicamente a partir dos dados: se uma
+    // temporada tiver mais ou menos semanas, mais ou menos seções aparecem
+    // automaticamente — não há mais uma lista fixa de "week1..week7".
+    const { grouped: initialEvents, sections: initialSections } = list
         ? groupEventsByWeek(list)
-        : {
-            preseason: [],
-            week1: [],
-            week2: [],
-            week3: [],
-            week4: [],
-            week5: [],
-            week6: [],
-            week7: [],
-            championship: [],
-            offseason: [],
-        };
+        : { grouped: {}, sections: [] };
 
-    return <EventsPageClient initialEvents={initialEvents} />;
+    return (
+        <EventsPageClient
+            initialEvents={initialEvents}
+            initialSections={initialSections}
+        />
+    );
 }
