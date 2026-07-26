@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 import EventFilters from "@/components/events/EventFilters";
 import EventSection from "@/components/events/EventSection";
 import type { FilterType } from "@/components/events/EventFilters";
+import type { EventItem } from "@/components/events/types";
 import { Search } from "lucide-react";
-import { EventListItem } from "@/types/events";
-import { getEventList } from "@/lib/api/events";
-import { groupEventsByWeek } from "@/utils/groupEventsByWeek";
 
 const SECTION_TITLES: Record<FilterType, string> = {
     preseason: "Preseason",
@@ -69,41 +67,147 @@ export default function EventsPage() {
     };
 
 
-    const [events, setEvents] = useState<Record<FilterType, EventListItem[]>>({
-        preseason: [],
-        week1: [],
-        week2: [],
-        week3: [],
-        week4: [],
-        week5: [],
-        week6: [],
-        week7: [],
-        championship: [],
-        offseason: [],
+    const [events, setEvents] = useState<Record<FilterType, EventItem[]>>({
+
+        preseason: [
+            {
+                event_key: "2026casf",
+                name: "Preseason Test Event",
+                city: "São Paulo",
+                country: "Brazil",
+                startDate: "Jan 10",
+                endDate: "Jan 12",
+                teams: 24,
+                favorite: true,
+            },
+        ],
+
+
+        week1: [
+            {
+                event_key: "2026sao",
+                name: "São Paulo Regional",
+                city: "São Paulo",
+                country: "Brazil",
+                startDate: "Mar 6",
+                endDate: "Mar 9",
+                teams: 36,
+                favorite: true,
+            },
+
+            {
+                event_key: "2026arli",
+                name: "Arkansas Regional",
+                city: "Little Rock",
+                country: "USA",
+                startDate: "Mar 7",
+                endDate: "Mar 10",
+                teams: 42,
+            },
+        ],
+
+
+        week2: [
+            {
+                event_key: "2026miova",
+                name: "Miami Valley Regional",
+                city: "Dayton",
+                country: "USA",
+                startDate: "Mar 13",
+                endDate: "Mar 16",
+                teams: 40,
+            },
+        ],
+
+
+        week3: [
+            {
+                event_key: "2026arli2",
+                name: "Arkansas Regional",
+                city: "Little Rock",
+                country: "USA",
+                startDate: "Mar 7",
+                endDate: "Mar 10",
+                teams: 42,
+            },
+        ],
+
+        week4: [
+            {
+                event_key: "2026arli3",
+                name: "Arkansas Regional",
+                city: "Little Rock",
+                country: "USA",
+                startDate: "Mar 7",
+                endDate: "Mar 10",
+                teams: 42,
+            },
+        ],
+
+        week5: [
+            {
+                event_key: "2026arli4",
+                name: "Arkansas Regional",
+                city: "Little Rock",
+                country: "USA",
+                startDate: "Mar 7",
+                endDate: "Mar 10",
+                teams: 42,
+            },
+        ],
+
+        week6: [
+            {
+                event_key: "2026arli5",
+                name: "Arkansas Regional",
+                city: "Little Rock",
+                country: "USA",
+                startDate: "Mar 7",
+                endDate: "Mar 10",
+                teams: 42,
+            },
+        ],
+
+        week7: [
+            {
+                event_key: "2026arli6",
+                name: "Arkansas Regional",
+                city: "Little Rock",
+                country: "USA",
+                startDate: "Mar 7",
+                endDate: "Mar 10",
+                teams: 42,
+            },
+        ],
+
+
+        championship: [
+            {
+                event_key: "2026cmptx",
+                name: "FIRST Championship",
+                city: "Houston",
+                country: "USA",
+                startDate: "Apr 29",
+                endDate: "May 2",
+                teams: 600,
+                favorite: true,
+            },
+        ],
+
+
+        offseason: [
+            {
+                event_key: "2026spoff",
+                name: "Offseason Competition",
+                city: "São Paulo",
+                country: "Brazil",
+                startDate: "Aug 15",
+                endDate: "Aug 17",
+                teams: 30,
+            },
+        ],
+
     });
-
-    const [loading, setLoading] = useState(true);
-
-    // busca a lista flat da TBA e agrupa por semana
-    useEffect(() => {
-        let cancelled = false;
-
-        getEventList().then((list) => {
-            if (cancelled) return;
-
-            if (list) {
-                setEvents(groupEventsByWeek(list));
-            }
-            // list === null -> erro/ano inválido, mantém estado vazio
-
-            setLoading(false);
-        });
-
-        return () => {
-            cancelled = true;
-        };
-    }, []);
-
 
     const [favoriteOnly, setFavoriteOnly] =
         useState(false);
@@ -199,7 +303,7 @@ export default function EventsPage() {
                     visibleSections={visibleWeekIds}
                     favorite={favoriteOnly}
                     onToggleFavorite={() => setFavoriteOnly((old) => !old)}
-                />
+                    />
 
 
             </section>
@@ -213,7 +317,7 @@ export default function EventsPage() {
                 "
             >
 
-                {loading ? null : visibleWeeks.map((section) => (
+                {visibleWeeks.map((section) => (
 
                     <EventSection
                         key={section.week}
