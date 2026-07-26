@@ -1,5 +1,5 @@
 import * as tba from "@/lib/api/tba";
-import { Team } from "@/types/team";
+import { Team, TeamListItem } from "@/types/team";
 import { TBATeamMedia } from "@/types/tba";
 
 /**
@@ -25,19 +25,19 @@ function findSocialUrl(media: TBATeamMedia[], type: string): string | undefined 
 
 
 function organizationFormater(organization: string) {
-    if (!organization) return organization;
+  if (!organization) return organization;
 
-    const sponsors = organization.split("/");
+  const sponsors = organization.split("/");
 
-    const visible = sponsors
-        .slice(0, 2)
-        .join(" / ");
+  const visible = sponsors
+    .slice(0, 2)
+    .join(" / ");
 
-    visible.replace("&", " & ")
+  visible.replace("&", " & ")
 
-    return sponsors.length > 2
-        ? `${visible} +${sponsors.length - 2}`
-        : visible;
+  return sponsors.length > 2
+    ? `${visible} +${sponsors.length - 2}`
+    : visible;
 }
 
 /**
@@ -98,6 +98,53 @@ export async function getTeam(team_key: string): Promise<Team | null> {
   } catch {
     // Team not found, invalid key, or TBA request failed — the caller
     // (src/app/teams/[team_key]/page.tsx) already handles a null team.
+    return null;
+  }
+}
+
+
+/**
+ * Fetches all from from The Blue Alliance API and adapts it to our app-level
+ * in `TeamListItem` list shape (src/types/teams.ts).
+ *
+ * This adapter step exists because `TBATeams` (src/types/tba/teams.ts)
+ * mirrors the raw TBA response — several fields there are `string | null`
+ * or `number | null` since TBA returns `null` for missing data. Our own
+ * `TeamsListItem` type uses optional fields (`field?: string`) instead, which
+ * TypeScript does NOT treat as equivalent to `null`. Every `?? undefined`
+ * below is bridging that gap.
+ *
+ * @returns The mapped `TeamListItem[]`, or `null` if the team doesn't exist / the
+ * TBA request fails (network error, TBA outage, etc).
+ */
+export async function getTeamListItem(pageNum : number): Promise<TeamListItem[] | null> {
+  try {
+    // Fetch the team profile, and avatar
+    const teamsTba = await tba.getTeamsByYearSimple(2025, pageNum);
+
+    const teamList: TeamListItem[] = [];
+
+    for (const team of teamsTba) {
+      teamList.push({
+        team_key: team.key,
+        team_number: team.team_number,
+        nickname: team.nickname,
+        city: team.city,
+        country: team.country,
+
+        //epa?: 256.7,
+
+        //registered?: boolean | null;
+        //favorite?: boolean | null;
+
+        avatar: await tba.getTeamAvatar(team.key, 2025),
+      });
+    }
+
+    return teamList;
+  } catch {
+    // Team not found,  or TBA request failed — the caller
+    // (src/app/teams//page.tsx) already handles a null team.
     return null;
   }
 }

@@ -1,10 +1,11 @@
 import TeamCard from "@/components/team/TeamCard";
+import { getTeamListItem } from "@/lib/api/teams";
 import { TeamListItem } from "@/types/team";
 import { Star, Search } from "lucide-react";
 
 export default async function TeamsPage() {
     // TODO: Fetch from the API
-    const teams: TeamListItem[] = [];
+    const teams: TeamListItem[] = await getTeamListItem(1) ?? [];
 
     return (
         <main
