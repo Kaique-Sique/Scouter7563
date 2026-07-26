@@ -1,5 +1,5 @@
 import * as tba from "@/lib/api/tba";
-import { Team } from "@/types/team";
+import { Team, TeamListItem } from "@/types/team";
 import { TBATeamMedia } from "@/types/tba";
 
 /**
@@ -25,19 +25,19 @@ function findSocialUrl(media: TBATeamMedia[], type: string): string | undefined 
 
 
 function organizationFormater(organization: string) {
-    if (!organization) return organization;
+  if (!organization) return organization;
 
-    const sponsors = organization.split("/");
+  const sponsors = organization.split("/");
 
-    const visible = sponsors
-        .slice(0, 2)
-        .join(" / ");
+  const visible = sponsors
+    .slice(0, 2)
+    .join(" / ");
 
-    visible.replace("&", " & ")
+  visible.replace("&", " & ")
 
-    return sponsors.length > 2
-        ? `${visible} +${sponsors.length - 2}`
-        : visible;
+  return sponsors.length > 2
+    ? `${visible} +${sponsors.length - 2}`
+    : visible;
 }
 
 /**
@@ -98,6 +98,82 @@ export async function getTeam(team_key: string): Promise<Team | null> {
   } catch {
     // Team not found, invalid key, or TBA request failed — the caller
     // (src/app/teams/[team_key]/page.tsx) already handles a null team.
+    return null;
+  }
+}
+
+
+/**
+ * Fetches every team from The Blue Alliance for a season and adapts them
+ * to our app-level `TeamListItem` list shape (src/types/team.ts).
+ *
+ * This adapter step exists because `TBATeamSimple` (src/types/tba/team.ts)
+ * mirrors the raw TBA response — several fields there are `string | null`
+ * since TBA returns `null` for missing data. Our own `TeamListItem` type
+ * mirrors that nullability directly, so no `?? undefined` bridging is
+ * needed here (unlike `getTeam` above).
+ *
+ * Two things changed from the first version of this function:
+ *
+ * 1. It used to fetch a single page (`pageNum`) and stop. TBA paginates
+ *    `/teams/{year}/{page_num}` in fixed chunks of 500 — with only page 0
+ *    fetched, the list silently capped at the first 500 teams. This
+ *    now walks pages 0, 1, 2... until TBA returns an empty page.
+ * 2. It used to call `tba.getTeamAvatar(team.key, ...)` for every single
+ *    team, one at a time, inside the loop — that's hundreds of sequential,
+ *    blocking network requests (each downloading a base64 image) before
+ *    the page could render at all. That was the actual cause of the slow
+ *    load, more than DOM size. Avatars are dropped from the list entirely;
+ *    they're only ever fetched for the one team being viewed, on the
+ *    team profile page (`getTeam` above).
+ *
+ * @returns The mapped `TeamListItem[]`, or `null` if the TBA request
+ * failed (network error, TBA outage, etc).
+ */
+export async function getTeamListItem(year: number = 2025): Promise<TeamListItem[] | null> {
+  try {
+    const teamList: TeamListItem[] = [];
+
+    // Batch a few pages at a time instead of one-by-one so we don't pay a
+    // full round-trip latency per page, but still stop as soon as we hit
+    // the empty page that marks the end of the list.
+    const BATCH_SIZE = 4;
+    let pageNum = 0;
+    let done = false;
+
+    while (!done) {
+      const batchPages = Array.from({ length: BATCH_SIZE }, (_, i) => pageNum + i);
+
+      const batchResults = await Promise.all(
+        batchPages.map((page) => tba.getTeamsByYearSimple(year, page))
+      );
+
+      for (const pageTeams of batchResults) {
+        if (pageTeams.length === 0) {
+          done = true;
+          break;
+        }
+
+        for (const team of pageTeams) {
+
+          teamList.push({
+            team_key: team.key,
+            team_number: team.team_number,
+            nickname: team.nickname,
+            organization: organizationFormater(team.name),
+            city: team.city,
+            country: team.country,
+          });
+        }
+      }
+
+      pageNum += BATCH_SIZE;
+    }
+
+    return teamList;
+  } catch {
+    // Year not valid, or TBA request failed — the caller
+    // (src/app/teams/page.tsx) already handles a null list.
     return null;
   }
 }

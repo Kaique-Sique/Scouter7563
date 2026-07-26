@@ -3,27 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Star, ShieldCheck } from "lucide-react";
+import {TeamListItem} from "@/types/team"
 
 interface TeamCardProps {
-  team: {
-    team_key: string;
-    team_number: number;
-    nickname: string;
-    organization?: string;
-    city?: string;
-    country?: string;
-
-    epa?: number;
-
-    registered?: boolean;
-    favorite?: boolean;
-
-    avatar?: string;
-  };
+    team: TeamListItem;
+    onToggleFavorite?: (teamKey: string) => void;
 }
-
 export default function TeamCard({
   team,
+  onToggleFavorite,
 }: TeamCardProps) {
   return (
     <Link
@@ -55,7 +43,7 @@ export default function TeamCard({
           {team.avatar ? (
             <Image
               src={team.avatar}
-              alt={team.nickname}
+              alt={team.nickname ?? "team logo"}
               fill
               className="object-cover"
             />
@@ -105,12 +93,45 @@ export default function TeamCard({
 
       <div className="flex shrink-0 flex-col items-end gap-3">
 
-        {team.favorite && (
+        {/* Favorite */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onToggleFavorite?.(
+              team.team_key
+                ? team.team_key
+                : " ? ");
+          }}
+          className={[
+            "flex",
+            "h-10",
+            "w-10",
+            "shrink-0",
+            "items-center",
+            "justify-center",
+            "rounded-xl",
+            "border",
+            "transition-all",
+            "duration-200",
+
+            team.favorite
+              ? "border-amber-400 bg-amber-500/10 text-amber-400"
+              : "border-slate-700 text-slate-400 hover:border-amber-400 hover:bg-amber-500/10 hover:text-amber-400",
+          ].join(" ")}
+        >
+
           <Star
             size={18}
-            className="fill-yellow-400 text-yellow-400"
+            fill={
+              team.favorite
+                ? "currentColor"
+                : "none"
+            }
           />
-        )}
+
+        </button>
 
         {team.epa !== undefined && (
           <div className="text-right">
@@ -120,7 +141,11 @@ export default function TeamCard({
             </p>
 
             <p className="text-xl font-bold text-sky-400">
-              {team.epa.toFixed(1)}
+              {
+                team.epa 
+                  ? team.epa.toFixed(1)
+                  : "--"
+              }
             </p>
 
           </div>

@@ -177,5 +177,5 @@ export const getTeamAvatar = async (
   const avatar = media.find((item) => item.type === "avatar");
   const base64Image = (avatar?.details as TBAAvatarDetails | undefined)?.base64Image;
 
-  return base64Image ? `data:image/png;base64,${base64Image}` : null;
+  return base64Image ? `data:image/png;base64,${base64Image}` : "";
 };
