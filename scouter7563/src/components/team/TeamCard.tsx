@@ -5,8 +5,12 @@ import Link from "next/link";
 import { Star, ShieldCheck } from "lucide-react";
 import {TeamListItem} from "@/types/team"
 
-
-export default function TeamCard(team: TeamListItem) {
+interface TeamCardProps {
+    team: TeamListItem;
+}
+export default function TeamCard({
+  team,
+}: TeamCardProps) {
   return (
     <Link
       href={`/teams/${team.team_key}`}

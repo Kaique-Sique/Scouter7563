@@ -1,44 +1,10 @@
 import TeamCard from "@/components/team/TeamCard";
+import { TeamListItem } from "@/types/team";
 import { Star, Search } from "lucide-react";
 
 export default async function TeamsPage() {
     // TODO: Fetch from the API
-    const teams = [
-        {
-            team_key: "frc7563",
-            team_number: 7563,
-            nickname: "Megazord",
-            organization: "SESI SENAI Robotics",
-            city: "São Paulo",
-            country: "Brazil",
-            epa: 109.4,
-            registered: true,
-            favorite: true,
-            avatar: "/logo.png",
-        },
-        {
-            team_key: "frc1114",
-            team_number: 1114,
-            nickname: "Simbotics",
-            organization: "St. Clement CSS",
-            city: "Ontario",
-            country: "Canada",
-            epa: 104.2,
-            registered: false,
-            favorite: false,
-        },
-        {
-            team_key: "frc2056",
-            team_number: 2056,
-            nickname: "OP Robotics",
-            organization: "St. Clair College",
-            city: "Ontario",
-            country: "Canada",
-            epa: 118.9,
-            registered: false,
-            favorite: false,
-        },
-    ];
+    const teams: TeamListItem[] = [];
 
     return (
         <main
@@ -131,12 +97,12 @@ export default async function TeamsPage() {
 
                 {/* Cards */}
                 <div className="space-y-3">
-                    {teams.map((team) => (
+                    {teams.map((teamItem) => (
                         <TeamCard
-                            key={team.team_key}
-                            team={}
-                        />
-                    ))}
+                            key={teamItem.team_key}
+                            team={teamItem}
+                        />))
+                    }
                 </div>
 
             </section>
