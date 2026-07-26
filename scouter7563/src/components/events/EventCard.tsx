@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { Star, MapPin, Users, CalendarDays } from "lucide-react";
-import type { EventItem } from "@/components/events/types";
+import type { EventsListItem } from "@/types/events";
 
 interface EventCardProps {
-    event: EventItem;
+    event: EventsListItem;
     onToggleFavorite?: (eventKey: string) => void;
 }
 
