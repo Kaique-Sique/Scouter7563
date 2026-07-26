@@ -155,7 +155,6 @@ export async function getTeamListItem(year: number = 2025): Promise<TeamListItem
         }
 
         for (const team of pageTeams) {
-          const avatar = await tba.getTeamAvatar(team.key, 2025)
 
           teamList.push({
             team_key: team.key,
