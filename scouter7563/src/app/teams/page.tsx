@@ -89,7 +89,7 @@ export default async function TeamsPage() {
                 {teams.map((team) => (
                     <TeamCard
                         key={team.team_key}
-                        {...team}
+                        team={team}
                     />
                 ))}
             </section>

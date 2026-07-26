@@ -3,10 +3,28 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Star, ShieldCheck } from "lucide-react";
-import { TeamListItem } from "@/types/team";
 
+interface TeamCardProps {
+  team: {
+    team_key: string;
+    team_number: number;
+    nickname: string;
+    organization?: string;
+    city?: string;
+    country?: string;
 
-export default function TeamCard(team: TeamListItem) {
+    epa?: number;
+
+    registered?: boolean;
+    favorite?: boolean;
+
+    avatar?: string;
+  };
+}
+
+export default function TeamCard({
+  team,
+}: TeamCardProps) {
   return (
     <Link
       href={`/teams/${team.team_key}`}
@@ -39,7 +57,7 @@ export default function TeamCard(team: TeamListItem) {
           {team.avatar ? (
             <Image
               src={team.avatar}
-              alt={team.nickname ?? "team logo"}
+              alt={team.nickname}
               fill
               className="object-cover"
             />
@@ -104,11 +122,7 @@ export default function TeamCard(team: TeamListItem) {
             </p>
 
             <p className="text-xl font-bold text-sky-400">
-              { 
-                team.epa 
-                  ? team.epa.toFixed(1) 
-                  : " ? "
-              }
+              {team.epa.toFixed(1)}
             </p>
 
           </div>
