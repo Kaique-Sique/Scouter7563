@@ -2,101 +2,64 @@
 
 import { Star } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import type { EventSectionMeta } from "@/utils/groupEventsByWeek";
 
-export type FilterType =
-    | "preseason"
-    | "week1"
-    | "week2"
-    | "week3"
-    | "week4"
-    | "week5"
-    | "week6"
-    | "week7"
-    | "championship"
-    | "offseason";
+// mantido só por compatibilidade com quem já importava esse tipo — agora
+// é uma string livre (ex: "preseason", "week1", "week12", "championship",
+// "offseason"), já que o número de semanas varia por temporada
+export type FilterType = string;
 
 interface EventFiltersProps {
-    sections: Record<FilterType, React.RefObject<HTMLElement | null>>;
-    visibleSections: FilterType[];
+    // ref mutável com o elemento DOM de cada seção, preenchida pelo
+    // EventsPageClient via callback ref — não são mais refs fixas por semana
+    sectionEls: React.MutableRefObject<Record<string, HTMLElement | null>>;
+    // metadados (id/label/gold) de todas as seções atualmente visíveis,
+    // já na ordem em que devem aparecer
+    visibleSections: EventSectionMeta[];
     favorite: boolean;
     onToggleFavorite: () => void;
 }
 
-interface Filter {
-    id: FilterType;
-    label: string;
-    gold?: boolean;
-}
-
-const ALL_FILTERS: Filter[] = [
-    { id: "preseason", label: "Preseason" },
-    { id: "week1", label: "Week 1" },
-    { id: "week2", label: "Week 2" },
-    { id: "week3", label: "Week 3" },
-    { id: "week4", label: "Week 4" },
-    { id: "week5", label: "Week 5" },
-    { id: "week6", label: "Week 6" },
-    { id: "week7", label: "Week 7" },
-    {
-        id: "championship",
-        label: "Championship",
-        gold: true,
-    },
-    {
-        id: "offseason",
-        label: "Offseason",
-    },
-];
-
-
-
 export default function EventFilters({
-    sections,
+    sectionEls,
     visibleSections,
     favorite,
     onToggleFavorite,
 }: EventFiltersProps) {
 
-    // só mostra pills das seções que estão de fato renderizadas agora
-    // (ex: quando o filtro de favoritos esconde semanas sem eventos favoritados)
-    const filters = ALL_FILTERS.filter((filter) =>
-        visibleSections.includes(filter.id)
-    );
+    const visibleIds = visibleSections.map((section) => section.id);
 
     const [activeSection, setActiveSection] =
-        useState<FilterType>("preseason");
+        useState<string>(visibleIds[0] ?? "");
 
-    // se a seção ativa não estiver mais visível (ex: favoritos escondeu ela),
-    // cai pra primeira seção visível só pra fins de renderização —
+    // se a seção ativa não estiver mais visível (ex: favoritos/busca escondeu
+    // ela, ou ela deixou de existir porque não há mais eventos), cai pra
+    // primeira seção visível só pra fins de renderização —
     // sem disparar setState dentro de efeito
-    const effectiveActiveSection: FilterType =
-        visibleSections.includes(activeSection)
+    const effectiveActiveSection: string =
+        visibleIds.includes(activeSection)
             ? activeSection
-            : visibleSections[0] ?? activeSection;
+            : visibleIds[0] ?? activeSection;
 
     const scrollRef =
         useRef<HTMLDivElement>(null);
 
     const refs =
-        useRef<Record<FilterType, HTMLButtonElement | null>>(
-            {} as Record<FilterType, HTMLButtonElement | null>
-        );
+        useRef<Record<string, HTMLButtonElement | null>>({});
 
-    function scrollToSection(id: FilterType) {
+    function scrollToSection(id: string) {
 
-    const section =
-        sections[id];
+        const section = sectionEls.current[id];
 
-    if (!section?.current)
-        return;
+        if (!section)
+            return;
 
+        section.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        });
 
-    section.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-    });
-
-}
+    }
 
     useEffect(() => {
         const container = scrollRef.current;
@@ -153,7 +116,7 @@ export default function EventFilters({
 
 
                 setActiveSection(
-                    visible.target.id as FilterType
+                    visible.target.id
                 );
 
             },
@@ -164,13 +127,13 @@ export default function EventFilters({
         );
 
 
-        visibleSections.forEach((id) => {
+        visibleIds.forEach((id) => {
 
-            const section = sections[id];
+            const section = sectionEls.current[id];
 
-            if (section?.current) {
+            if (section) {
 
-                observer.observe(section.current);
+                observer.observe(section);
 
             }
 
@@ -179,8 +142,8 @@ export default function EventFilters({
 
         return () => observer.disconnect();
 
-
-    }, [sections, visibleSections]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [sectionEls, visibleIds.join(",")]);
 
     return (
         <div className="relative flex items-center">
@@ -225,7 +188,7 @@ export default function EventFilters({
         hover:scrollbar-thumb-slate-600
     "
             >
-                {filters.map((filter) => {
+                {visibleSections.map((filter) => {
 
                     const active =
                         effectiveActiveSection === filter.id;

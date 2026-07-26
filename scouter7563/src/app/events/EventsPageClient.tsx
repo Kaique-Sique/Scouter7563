@@ -4,81 +4,58 @@ import { useMemo, useRef, useState } from "react";
 
 import EventFilters from "@/components/events/EventFilters";
 import EventSection from "@/components/events/EventSection";
-import type { FilterType } from "@/components/events/EventFilters";
 import { Search } from "lucide-react";
 import { EventListItem } from "@/types/events";
-
-const SECTION_TITLES: Record<FilterType, string> = {
-    preseason: "Preseason",
-    week1: "Week 1",
-    week2: "Week 2",
-    week3: "Week 3",
-    week4: "Week 4",
-    week5: "Week 5",
-    week6: "Week 6",
-    week7: "Week 7",
-    championship: "Championship",
-    offseason: "Offseason",
-};
+import type { EventSectionMeta } from "@/utils/groupEventsByWeek";
 
 interface EventsPageClientProps {
     // dados já buscados e agrupados no servidor (ver page.tsx)
-    initialEvents: Record<FilterType, EventListItem[]>;
+    initialEvents: Record<string, EventListItem[]>;
+    // metadados das seções (id/label/gold), já na ordem correta, montados
+    // dinamicamente a partir dos dados — o número de seções (semanas) varia
+    // conforme a temporada, então nada aqui é mais fixo em "week1..week7"
+    initialSections: EventSectionMeta[];
 }
 
-export default function EventsPageClient({ initialEvents }: EventsPageClientProps) {
+function matchesQuery(event: EventListItem, query: string): boolean {
+    if (!query) return true;
 
-    const preseasonRef =
-        useRef<HTMLElement>(null);
+    const needle = query.trim().toLowerCase();
+    if (!needle) return true;
 
-    const week1Ref =
-        useRef<HTMLElement>(null);
+    const name = event.name?.toLowerCase() ?? "";
+    const key = event.event_key?.toLowerCase() ?? "";
 
-    const week2Ref =
-        useRef<HTMLElement>(null);
+    return name.includes(needle) || key.includes(needle);
+}
 
-    const week3Ref =
-        useRef<HTMLElement>(null);
+export default function EventsPageClient({
+    initialEvents,
+    initialSections,
+}: EventsPageClientProps) {
 
-    const week4Ref =
-        useRef<HTMLElement>(null);
-
-    const week5Ref =
-        useRef<HTMLElement>(null);
-
-    const week6Ref =
-        useRef<HTMLElement>(null);
-
-    const week7Ref =
-        useRef<HTMLElement>(null);
-
-    const championshipRef =
-        useRef<HTMLElement>(null);
-
-    const offseasonRef =
-        useRef<HTMLElement>(null);
-
-    const sectionRefs: Record<FilterType, React.RefObject<HTMLElement | null>> = {
-        preseason: preseasonRef,
-        week1: week1Ref,
-        week2: week2Ref,
-        week3: week3Ref,
-        week4: week4Ref,
-        week5: week5Ref,
-        week6: week6Ref,
-        week7: week7Ref,
-        championship: championshipRef,
-        offseason: offseasonRef,
-    };
-
+    // objeto mutável com o elemento DOM de cada seção (id -> HTMLElement).
+    // Como o número de seções é dinâmico, não dá pra declarar um useRef por
+    // semana como antes — cada EventSection registra a si mesma aqui via
+    // callback ref.
+    const sectionElsRef =
+        useRef<Record<string, HTMLElement | null>>({});
 
     // estado inicializado com o que já veio pronto do servidor —
     // sem fetch nenhum aqui dentro
-    const [events, setEvents] = useState<Record<FilterType, EventListItem[]>>(initialEvents);
+    const [events, setEvents] =
+        useState<Record<string, EventListItem[]>>(initialEvents);
 
+    // as seções em si (id/label/order) já vêm prontas do servidor; só o
+    // conteúdo de cada uma (visibleSectionsData) muda no cliente conforme
+    // busca/favoritos
+    const sections = initialSections;
 
     const [favoriteOnly, setFavoriteOnly] =
         useState(false);
+
+    const [searchQuery, setSearchQuery] =
+        useState("");
 
     function toggleEventFavorite(eventKey: string) {
 
@@ -86,8 +63,8 @@ export default function EventsPageClient({ initialEvents }: EventsPageClientProp
 
             const next = { ...old };
 
-            (Object.keys(next) as FilterType[]).forEach((week) => {
-                next[week] = next[week].map((event) =>
+            (Object.keys(next) as string[]).forEach((sectionId) => {
+                next[sectionId] = next[sectionId].map((event) =>
                     event.event_key === eventKey
                         ? { ...event, favorite: !event.favorite }
                         : event
@@ -100,31 +77,32 @@ export default function EventsPageClient({ initialEvents }: EventsPageClientProp
 
     }
 
-    // quando o filtro de favoritos está ativo, só sobram as semanas
-    // que têm pelo menos um evento favoritado, e só os eventos favoritados nelas
-    const visibleWeeks = useMemo(() => {
+    // aplica favoritos + busca (por nome ou key) e só mantém as seções que
+    // sobraram com pelo menos 1 evento -> seções são criadas/removidas
+    // dinamicamente conforme o resultado, não só quando o filtro de
+    // favoritos está ativo
+    const visibleSectionsData = useMemo(() => {
 
-        return (Object.keys(SECTION_TITLES) as FilterType[])
-            .map((week) => ({
-                week,
-                title: SECTION_TITLES[week],
-                data: favoriteOnly
-                    ? events[week].filter((event) => event.favorite)
-                    : events[week],
+        return sections
+            .map((section) => ({
+                ...section,
+                data: (events[section.id] ?? [])
+                    .filter((event) => !favoriteOnly || event.favorite)
+                    .filter((event) => matchesQuery(event, searchQuery)),
             }))
-            .filter((section) => !favoriteOnly || section.data.length > 0);
+            .filter((section) => section.data.length > 0);
 
-    }, [events, favoriteOnly]);
+    }, [events, sections, favoriteOnly, searchQuery]);
 
-    // sectionRefs é feito de refs estáveis (useRef), então isso nunca muda de identidade
-    const stableSectionRefs = useMemo(() => sectionRefs, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-    // ids das semanas atualmente renderizadas (sem tocar em refs durante o render)
-    const visibleWeekIds = useMemo(
-        () => visibleWeeks.map((section) => section.week),
-        [visibleWeeks]
+    const visibleSectionsMeta: EventSectionMeta[] = useMemo(
+        () => visibleSectionsData.map((section): EventSectionMeta => ({
+            id: section.id,
+            label: section.label,
+            gold: section.gold,
+            order: section.order,
+        })),
+        [visibleSectionsData]
     );
-
 
     return (
 
@@ -159,7 +137,9 @@ export default function EventsPageClient({ initialEvents }: EventsPageClientProp
 
                         <input
                             type="text"
-                            placeholder="Search events"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Search events by name or key"
                             className="w-full bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none"
                         />
                     </div>
@@ -167,8 +147,8 @@ export default function EventsPageClient({ initialEvents }: EventsPageClientProp
 
                 {/* Filters */}
                 <EventFilters
-                    sections={stableSectionRefs}
-                    visibleSections={visibleWeekIds}
+                    sectionEls={sectionElsRef}
+                    visibleSections={visibleSectionsMeta}
                     favorite={favoriteOnly}
                     onToggleFavorite={() => setFavoriteOnly((old) => !old)}
                 />
@@ -185,13 +165,22 @@ export default function EventsPageClient({ initialEvents }: EventsPageClientProp
                 "
             >
 
-                {visibleWeeks.map((section) => (
+                {visibleSectionsData.length === 0 ? (
+
+                    <p className="text-center text-sm text-slate-500">
+                        No events found.
+                    </p>
+
+                ) : visibleSectionsData.map((section) => (
 
                     <EventSection
-                        key={section.week}
-                        title={section.title}
+                        key={section.id}
+                        id={section.id}
+                        title={section.label}
                         events={section.data}
-                        sectionRef={sectionRefs[section.week]}
+                        sectionRef={(el) => {
+                            sectionElsRef.current[section.id] = el;
+                        }}
                         onToggleFavorite={toggleEventFavorite}
                     />
 
