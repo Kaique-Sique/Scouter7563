@@ -1,9 +1,9 @@
 import EventCard from "@/components/events/EventCard";
-import type { EventItem } from "@/components/events/types";
+import type { EventListItem } from "@/types/events";
 
 interface EventSectionProps {
     title: string;
-    events: EventItem[];
+    events: EventListItem[];
     sectionRef?: React.RefObject<HTMLElement | null>;
     onToggleFavorite?: (eventKey: string) => void;
 }

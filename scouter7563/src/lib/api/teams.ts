@@ -1,5 +1,5 @@
 import * as tba from "@/lib/api/tba";
-import { Team } from "@/types/team";
+import { Team, TeamListItem } from "@/types/team";
 import { TBATeamMedia } from "@/types/tba";
 
 /**
@@ -101,3 +101,7 @@ export async function getTeam(team_key: string): Promise<Team | null> {
     return null;
   }
 }
+
+
+/** TODO: implement api on /teams using this function below */
+export async function getTeamListItem(): Promise<TeamListItem | null> {return null;}
