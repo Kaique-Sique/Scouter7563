@@ -17,7 +17,22 @@ import UpcomingMatches, {
 } from "@/components/dashboard/UpcomingMatches";
 
 export default function Home() {
-  const [event, setEvent] = useState("2026brbri");
+  const events = [
+    {
+      key: "2026brbri",
+      name: "2026 Brazil Regional",
+    },
+    {
+      key: "2026miket",
+      name: "2026 Kettering University District",
+    },
+    {
+      key: "2026gadal",
+      name: "2026 Dalton District",
+    },
+  ];
+
+  const [event, setEvent] = useState(events[0].key);
 
   // Temporary data
   const totalTeams = 42;
@@ -26,62 +41,61 @@ export default function Home() {
   const scoutedMatches = 5;
 
   const matches: Match[] = [
-  {
-    key: "2026brbri_qm56",
-    match: "Qual 56",
-    status: "live",
+    {
+      key: "2026brbri_qm56",
+      match: "Qual 56",
+      status: "live",
 
-    red: [
-      { team: 7563, favorite: true },
-      { team: 1156, favorite: true },
-      { team: 1772 },
-    ],
+      red: [
+        { team: 7563, favorite: true },
+        { team: 1156, favorite: true },
+        { team: 1772 },
+      ],
 
-    blue: [
-      { team: 1153 },
-      { team: 7565 },
-      { team: 9163 },
-    ],
-  },
-  {
-    key: "2026brbri_qm57",
-    match: "Qual 57",
-    status: "on_field",
+      blue: [
+        { team: 1153 },
+        { team: 7565 },
+        { team: 9163 },
+      ],
+    },
+    {
+      key: "2026brbri_qm57",
+      match: "Qual 57",
+      status: "on_field",
 
-    red: [
-      { team: 5985 },
-      { team: 7565 },
-      { team: 1156, favorite: true },
-    ],
+      red: [
+        { team: 5985 },
+        { team: 7565 },
+        { team: 1156, favorite: true },
+      ],
 
-    blue: [
-      { team: 7563, favorite: true },
-      { team: 1772 },
-      { team: 1153 },
-    ],
-  },
-  {
-    key: "2026brbri_qm58",
-    match: "Qual 58",
-    status: "scheduled",
+      blue: [
+        { team: 7563, favorite: true },
+        { team: 1772 },
+        { team: 1153 },
+      ],
+    },
+    {
+      key: "2026brbri_qm58",
+      match: "Qual 58",
+      status: "scheduled",
 
-    red: [
-      { team: 9163 },
-      { team: 1772 },
-      { team: 1153 },
-    ],
+      red: [
+        { team: 9163 },
+        { team: 1772 },
+        { team: 1153 },
+      ],
 
-    blue: [
-      { team: 7563, favorite: true },
-      { team: 5985 },
-      { team: 7565 },
-    ],
-  },
+      blue: [
+        { team: 7563, favorite: true },
+        { team: 5985 },
+        { team: 7565 },
+      ],
+    },
   ];
 
   return (
     <div className="min-h-screen bg-slate-950 px-6 py-8">
-
       {/* Title */}
       <h1 className="text-3xl font-bold text-white">
         Dashboard
@@ -90,6 +104,7 @@ export default function Home() {
       {/* Event */}
       <div className="mt-6">
         <EventSelector
+          events={events}
           selectedEvent={event}
           onChange={setEvent}
         />
@@ -97,7 +112,6 @@ export default function Home() {
 
       {/* Statistics */}
       <section className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-
         <StatCard
           title="Teams"
           value={totalTeams.toString()}
@@ -121,7 +135,6 @@ export default function Home() {
           value="ON"
           icon={<RefreshCw />}
         />
-
       </section>
 
       {/* Progress */}
@@ -139,7 +152,6 @@ export default function Home() {
         className="mt-6"
         matches={matches}
       />
-
     </div>
   );
 }

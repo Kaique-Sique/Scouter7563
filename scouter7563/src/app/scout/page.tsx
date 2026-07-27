@@ -11,6 +11,21 @@ import AlliancePanel from "@/components/scout/AlliancePanel";
 import StartScoutButton from "@/components/scout/StartScoutButton";
 import { CompetitionLevel } from "@/types/enums/CompetitionLevel";
 
+const events = [
+  {
+    key: "2026brsp",
+    name: "2026 Brazil Regional",
+  },
+  {
+    key: "2026miket",
+    name: "2026 Kettering University District",
+  },
+  {
+    key: "2026gadal",
+    name: "2026 Dalton District",
+  },
+];
+
 const matches: Match[] = [
   {
     key: "2026brsp_qm1",
@@ -33,21 +48,21 @@ const redAlliance = [
   {
     key: "frc7563",
     number: 7563,
-    nickname: "red",
+    nickname: "Red",
     avatar: "",
     station: "R1",
   },
   {
     key: "frc1156",
     number: 1156,
-    nickname: "red",
+    nickname: "Red",
     avatar: "",
     station: "R2",
   },
   {
     key: "frc6328",
     number: 6328,
-    nickname: "red",
+    nickname: "Red",
     avatar: "",
     station: "R3",
   },
@@ -80,7 +95,7 @@ const blueAlliance = [
 export default function ScoutPage() {
   const router = useRouter();
 
-  const [selectedEvent, setSelectedEvent] = useState("2026brsp");
+  const [selectedEvent, setSelectedEvent] = useState(events[0].key);
   const [selectedMatch, setSelectedMatch] = useState("");
   const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
 
@@ -103,14 +118,11 @@ export default function ScoutPage() {
       station: teamEntry.station,
     });
 
-    // TODO: once auto/teleop/pit become a single scouting page,
-    // update this route to the new unified flow.
     router.push(`/scout/2025/auto?${params.toString()}`);
   }
 
   return (
     <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-8">
-
       {/* Header */}
       <section>
         <h1 className="text-3xl font-bold text-white">
@@ -122,15 +134,14 @@ export default function ScoutPage() {
         </p>
       </section>
 
-
       {/* Event */}
       <section>
         <EventSelector
+          events={events}
           selectedEvent={selectedEvent}
           onChange={setSelectedEvent}
         />
       </section>
-
 
       {/* Match */}
       <section>
@@ -141,10 +152,8 @@ export default function ScoutPage() {
         />
       </section>
 
-
       {/* Alliances */}
       <section className="grid gap-6 lg:grid-cols-2">
-
         <AlliancePanel
           title="Red Alliance"
           alliance="red"
@@ -160,9 +169,7 @@ export default function ScoutPage() {
           selectedTeam={selectedTeam}
           onSelectTeam={setSelectedTeam}
         />
-
       </section>
-
 
       {/* Action */}
       <section className="flex justify-center pt-2">
@@ -171,7 +178,6 @@ export default function ScoutPage() {
           onClick={handleStartScout}
         />
       </section>
-
     </main>
   );
 }
