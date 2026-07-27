@@ -15,6 +15,8 @@ interface EventsPageClientProps {
     // dinamicamente a partir dos dados — o número de seções (semanas) varia
     // conforme a temporada, então nada aqui é mais fixo em "week1..week7"
     initialSections: EventSectionMeta[];
+
+    searchDefaultValue: string;
 }
 
 function matchesQuery(event: EventListItem, query: string): boolean {
@@ -32,6 +34,7 @@ function matchesQuery(event: EventListItem, query: string): boolean {
 export default function EventsPageClient({
     initialEvents,
     initialSections,
+    searchDefaultValue
 }: EventsPageClientProps) {
 
     // objeto mutável com o elemento DOM de cada seção (id -> HTMLElement).
@@ -55,7 +58,7 @@ export default function EventsPageClient({
         useState(false);
 
     const [searchQuery, setSearchQuery] =
-        useState("");
+        useState(searchDefaultValue);
 
     function toggleEventFavorite(eventKey: string) {
 

@@ -1,16 +1,137 @@
 "use client";
 
 import Image from "next/image";
-import { Menu, Search, User } from "lucide-react";
+import { Menu, Search, User, Users, CalendarDays, ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 interface HeaderProps {
   onMenuClick: () => void;
 }
 
+interface Suggestion {
+  id: string;
+  label: string;
+  hint: string;
+  icon: React.ReactNode;
+  href: string;
+}
+
 export default function Header({ onMenuClick }: HeaderProps) {
+
+  const router = useRouter();
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Número puro ("254") ou já com o prefixo ("frc254") -> a página do
+  // time já existe em /teams/[team_key], então vira a sugestão de topo.
+  const teamKeyMatch = useMemo(
+    () => /^(?:frc)?(\d+)$/i.exec(query.trim()),
+    [query]
+  );
+
+  // Sugestões são geradas na hora a partir do que foi digitado — não são
+  // um resultado de busca real (não temos dado de times/eventos aqui no
+  // client), só atalhos pros lugares mais prováveis pra onde a pessoa quer
+  // ir a partir do texto.
+  const suggestions: Suggestion[] = useMemo(() => {
+
+    const value = query.trim();
+
+    if (!value) return [];
+
+    const items: Suggestion[] = [];
+
+    if (teamKeyMatch) {
+      const teamKey = `frc${teamKeyMatch[1]}`;
+
+      items.push({
+        id: "team-direct",
+        label: `Team ${teamKeyMatch[1]}`,
+        hint: "Go to team page",
+        icon: <Users className="h-4 w-4" />,
+        href: `/teams/${teamKey}`,
+      });
+    }
+
+    items.push({
+      id: "teams-search",
+      label: value,
+      hint: "Search in Teams",
+      icon: <Search className="h-4 w-4" />,
+      href: `/teams?q=${encodeURIComponent(value)}`,
+    });
+
+    items.push({
+      id: "events-search",
+      label: value,
+      hint: "Search in Events",
+      icon: <CalendarDays className="h-4 w-4" />,
+      href: `/events?q=${encodeURIComponent(value)}`,
+    });
+
+    return items;
+
+  }, [query, teamKeyMatch]);
+
+  // Fecha o dropdown ao clicar fora da barra de busca
+  useEffect(() => {
+
+    function handleClickOutside(e: MouseEvent) {
+      if (!containerRef.current) return;
+
+      if (!containerRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+
+  }, []);
+
+  // Sempre que a lista de sugestões muda, volta o destaque pra primeira
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [suggestions]);
+
+  function goTo(href: string) {
+    router.push(href);
+    setQuery("");
+    setOpen(false);
+  }
+
+  function handleSubmit() {
+    const target = suggestions[activeIndex] ?? suggestions[0];
+    if (target) goTo(target.href);
+  }
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+
+    if (!open || suggestions.length === 0) return;
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setActiveIndex((i) => (i + 1) % suggestions.length);
+    }
+
+    else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setActiveIndex((i) => (i - 1 + suggestions.length) % suggestions.length);
+    }
+
+    else if (e.key === "Escape") {
+      setOpen(false);
+    }
+
+  }
+
   return (
-    <header className="fixed top-0 left-0 z-30 h-14 w-full border-b border-slate-800 bg-slate-950">
+    <header className="fixed top-0 left-0 z-50 h-14 w-full border-b border-slate-800 bg-slate-950">
       <div className="flex h-full items-center justify-between px-5 lg:px-6">
 
         {/* Left */}
@@ -55,18 +176,99 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
 
         {/* Center */}
-        <div className="hidden w-full max-w-xl px-8 md:block">
-          <div className="flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-900 px-4 py-2 transition-colors focus-within:border-blue-500">
+        <div
+          ref={containerRef}
+          className="relative hidden w-full max-w-xl px-8 md:block"
+        >
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit();
+            }}
+            className="flex items-center gap-3 rounded-xl border border-slate-700 bg-slate-900 px-4 py-2 transition-colors focus-within:border-blue-500"
+          >
 
-            <Search className="h-5 w-5 text-slate-400" />
+            <button
+              type="submit"
+              aria-label="Search"
+              className="shrink-0 text-slate-400 transition-colors hover:text-white"
+            >
+              <Search className="h-5 w-5" />
+            </button>
 
             <input
               type="text"
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setOpen(true);
+              }}
+              onFocus={() => setOpen(true)}
+              onKeyDown={handleKeyDown}
               placeholder="Search teams, events or matches..."
               className="w-full bg-transparent text-sm text-white placeholder:text-slate-500 focus:outline-none"
             />
 
-          </div>
+          </form>
+
+          {/* Suggestions */}
+          {open && suggestions.length > 0 && (
+            <div
+              className="
+                absolute
+                left-8
+                right-8
+                top-full
+                mt-2
+                overflow-hidden
+                rounded-xl
+                border
+                border-slate-700
+                bg-slate-900
+                shadow-lg
+                shadow-black/40
+              "
+            >
+              {suggestions.map((suggestion, index) => (
+                <button
+                  key={suggestion.id}
+                  type="button"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onMouseEnter={() => setActiveIndex(index)}
+                  onClick={() => goTo(suggestion.href)}
+                  className={[
+                    "flex",
+                    "w-full",
+                    "items-center",
+                    "gap-3",
+                    "px-4",
+                    "py-2.5",
+                    "text-left",
+                    "text-sm",
+                    "transition-colors",
+
+                    index === activeIndex
+                      ? "bg-slate-800 text-white"
+                      : "text-slate-300",
+                  ].join(" ")}
+                >
+                  <span className="shrink-0 text-slate-400">
+                    {suggestion.icon}
+                  </span>
+
+                  <span className="truncate">
+                    {suggestion.label}
+                  </span>
+
+                  <span className="ml-auto flex shrink-0 items-center gap-1 text-xs text-slate-500">
+                    {suggestion.hint}
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </span>
+                </button>
+              ))}
+            </div>
+          )}
+
         </div>
 
 
