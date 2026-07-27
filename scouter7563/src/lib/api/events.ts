@@ -1,5 +1,5 @@
 import * as tba from "@/lib/api/tba";
-import { Event, EventListItem, } from "@/types/events";
+import { Event, EventListItem, EventOption, } from "@/types/events";
 import { TBAEvent } from "@/types/tba/event";
 
 /** TODO: implement api on /teams using this function below */
@@ -65,6 +65,29 @@ export async function getEventList(): Promise<EventListItem[] | null> {
     } catch {
         // year not valid, or TBA request failed — the caller
         // (src/app/events/page.tsx) handles with null showing no events.
+        return null;
+    }
+}
+
+export async function getEventOptions(): Promise<EventOption[] | null> 
+{
+    try {
+        // Fetch the date from tba 
+        const eventsListTBA = await tba.getEventsByYearSimple(2025);
+
+        const eventList: EventOption[] = [];
+
+        for (const event of eventsListTBA) {
+            eventList.push({
+                key: event.key,
+                name: event.name,
+            });
+        }
+
+        return eventList;
+
+    } catch {
+        // year not valid, or TBA request failed — the caller
         return null;
     }
 }

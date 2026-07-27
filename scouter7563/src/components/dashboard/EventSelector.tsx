@@ -7,11 +7,9 @@ import {
   ChevronDown,
   Search,
 } from "lucide-react";
+import { EventOption } from "@/types/events";
 
-interface EventOption {
-  key: string;
-  name: string;
-}
+
 
 interface EventSelectorProps {
   events: EventOption[];
