@@ -53,14 +53,20 @@ function sortTeams(list: TeamListItem[], sortKey: SortKey): TeamListItem[] {
     }
 }
 
+interface TeamsPageClientProps {
+    initialTeams: TeamListItem[];
+    searchInitialValue: string;
+}
+
 export default function TeamsPageClient({
     initialTeams,
+    searchInitialValue,
 }: TeamsPageClientProps) {
 
     const [teams, setTeams] = useState<TeamListItem[]>(initialTeams);
 
     const [favoriteOnly, setFavoriteOnly] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState(searchInitialValue);
     const [sortKey, setSortKey] = useState<SortKey>("Team Number");
 
     function toggleTeamFavorite(teamKey: string) {
@@ -85,7 +91,7 @@ export default function TeamsPageClient({
 
     const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-    
+
     useEffect(() => {
         setVisibleCount(PAGE_SIZE);
     }, [favoriteOnly, searchQuery, sortKey]);
