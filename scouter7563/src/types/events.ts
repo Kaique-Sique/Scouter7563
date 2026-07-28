@@ -17,3 +17,8 @@ export interface EventListItem {// /events
     favorite?: boolean | null;
     week?: string | null;
 }
+
+export interface EventOption {
+  key: string;
+  name: string;
+}

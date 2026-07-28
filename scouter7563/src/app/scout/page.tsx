@@ -1,177 +1,72 @@
-"use client";
+import { getEventOptions } from "@/lib/api/events";
+import { getMatchAlliances, getMatchOptions } from "@/lib/api/match";
+import ScoutPageClient from "./scoutPageClient";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+interface Props {
+  searchParams: Promise<{
+    event?: string;
+    match?: string;
+  }>;
+}
 
-import EventSelector from "@/components/dashboard/EventSelector";
-import MatchSelector, {
-  Match,
-} from "@/components/scout/MatchSelector";
-import AlliancePanel from "@/components/scout/AlliancePanel";
-import StartScoutButton from "@/components/scout/StartScoutButton";
-import { CompetitionLevel } from "@/types/enums/CompetitionLevel";
+/**
+ * `/scout` — scouting preparation screen (server component).
+ *
+ * Both `event` and `match` selection live in the URL search params, not
+ * in client-only state. This mirrors the pattern already used by
+ * `src/app/teams/page.tsx` (search param `q`): every time the scouter
+ * picks a different event or match, `ScoutPageClient` pushes the new
+ * params and Next.js re-runs this server component, which re-fetches
+ * from TBA here. That's not just style — it's required, since the TBA
+ * API key only exists server-side (see `tbaConfig` in
+ * src/lib/config/config.ts), so match/alliance data can't be fetched
+ * from the client at all.
+ */
+export default async function ScoutPage({ searchParams }: Props) {
+  const params = await searchParams;
 
-const matches: Match[] = [
-  {
-    key: "2026brsp_qm1",
-    matchNumber: 1,
-    competitionLevel: CompetitionLevel.Qualification,
-  },
-  {
-    key: "2026brsp_qm2",
-    matchNumber: 2,
-    competitionLevel: CompetitionLevel.Qualification,
-  },
-  {
-    key: "2026brsp_qm3",
-    matchNumber: 3,
-    competitionLevel: CompetitionLevel.Qualification,
-  },
-];
+  // Every event available to scout. Falls back to an empty list further
+  // down (in ScoutPageClient) if the TBA request failed.
+  const events = await getEventOptions();
 
-const redAlliance = [
-  {
-    key: "frc7563",
-    number: 7563,
-    nickname: "red",
-    avatar: "",
-    station: "R1",
-  },
-  {
-    key: "frc1156",
-    number: 1156,
-    nickname: "red",
-    avatar: "",
-    station: "R2",
-  },
-  {
-    key: "frc6328",
-    number: 6328,
-    nickname: "red",
-    avatar: "",
-    station: "R3",
-  },
-];
+  // No `?event=` in the URL yet -> default to the first event in the
+  // list, so the screen isn't empty on first load.
+  const selectedEvent = params.event ?? events?.[0]?.key ?? null;
 
-const blueAlliance = [
-  {
-    key: "frc7565",
-    number: 7565,
-    nickname: "Blue",
-    avatar: "",
-    station: "B1",
-  },
-  {
-    key: "frc1884",
-    number: 1884,
-    nickname: "Blue",
-    avatar: "",
-    station: "B2",
-  },
-  {
-    key: "frc1323",
-    number: 1323,
-    nickname: "Blue",
-    avatar: "",
-    station: "B3",
-  },
-];
+  // Every match of the selected event, each already carrying its own
+  // red/blue team keys (see getMatchOptions in src/lib/api/match.ts).
+  const matches = selectedEvent ? await getMatchOptions(selectedEvent) : null;
 
-export default function ScoutPage() {
-  const router = useRouter();
+  // No `?match=` in the URL -> nothing selected yet, nothing to look up.
+  const selectedMatch = params.match ?? null;
 
-  const [selectedEvent, setSelectedEvent] = useState("2026brsp");
-  const [selectedMatch, setSelectedMatch] = useState("");
-  const [selectedTeam, setSelectedTeam] = useState<string | null>(null);
+  // The six teams playing in the selected match, resolved to
+  // number/nickname/avatar for the alliance panels. Team keys are pulled
+  // from the match we already fetched above (`matches`) instead of
+  // hitting TBA again for the match itself.
+  const selectedMatchOption = selectedMatch
+    ? matches?.find((match) => match.key === selectedMatch) ?? null
+    : null;
 
-  const teamEntry = [
-    ...redAlliance.map((team) => ({ ...team, alliance: "red" as const })),
-    ...blueAlliance.map((team) => ({ ...team, alliance: "blue" as const })),
-  ].find((team) => team.key === selectedTeam);
-
-  const canStartScout = Boolean(selectedMatch && teamEntry);
-
-  function handleStartScout() {
-    if (!teamEntry) return;
-
-    const params = new URLSearchParams({
-      event: selectedEvent,
-      match: selectedMatch,
-      team: teamEntry.key,
-      number: teamEntry.number.toString(),
-      alliance: teamEntry.alliance,
-      station: teamEntry.station,
-    });
-
-    // TODO: once auto/teleop/pit become a single scouting page,
-    // update this route to the new unified flow.
-    router.push(`/scout/2025/auto?${params.toString()}`);
-  }
+  const alliances = selectedMatchOption
+    ? await getMatchAlliances(
+        selectedMatchOption.redTeamKeys,
+        selectedMatchOption.blueTeamKeys,
+        // Season year, needed for the team avatar lookup. Every event key
+        // is prefixed with its year (e.g. "2025sao"), so it's pulled from
+        // there instead of hardcoding a season.
+        parseInt(selectedEvent!.slice(0, 4), 10)
+      )
+    : null;
 
   return (
-    <main className="mx-auto flex w-full max-w-7xl flex-col gap-8 px-6 py-8">
-
-      {/* Header */}
-      <section>
-        <h1 className="text-3xl font-bold text-white">
-          Scout Preparation
-        </h1>
-
-        <p className="mt-2 text-sm text-slate-400">
-          Prepare and start a new scouting session.
-        </p>
-      </section>
-
-
-      {/* Event */}
-      <section>
-        <EventSelector
-          selectedEvent={selectedEvent}
-          onChange={setSelectedEvent}
-        />
-      </section>
-
-
-      {/* Match */}
-      <section>
-        <MatchSelector
-          matches={matches}
-          selectedMatch={selectedMatch}
-          onChange={setSelectedMatch}
-        />
-      </section>
-
-
-      {/* Alliances */}
-      <section className="grid gap-6 lg:grid-cols-2">
-
-        <AlliancePanel
-          title="Red Alliance"
-          alliance="red"
-          teams={redAlliance}
-          selectedTeam={selectedTeam}
-          onSelectTeam={setSelectedTeam}
-        />
-
-        <AlliancePanel
-          title="Blue Alliance"
-          alliance="blue"
-          teams={blueAlliance}
-          selectedTeam={selectedTeam}
-          onSelectTeam={setSelectedTeam}
-        />
-
-      </section>
-
-
-      {/* Action */}
-      <section className="flex justify-center pt-2">
-        <StartScoutButton
-          disabled={!canStartScout}
-          onClick={handleStartScout}
-        />
-      </section>
-
-    </main>
+    <ScoutPageClient
+      eventsList={events}
+      selectedEvent={selectedEvent}
+      matches={matches}
+      selectedMatch={selectedMatch}
+      redAlliance={alliances?.red ?? []}
+      blueAlliance={alliances?.blue ?? []}
+    />
   );
 }

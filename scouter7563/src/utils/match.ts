@@ -1,23 +1,27 @@
-import { CompetitionLevel } from "@/types/enums/CompetitionLevel";
+import { CompetitionLevel } from "@/types/tba/common";
 
 export function formatMatchLabel(
-  competitionLevel: CompetitionLevel,
-  matchNumber: number
+  competitionLevel: CompetitionLevel | null | undefined,
+  matchNumber: number | null | undefined
 ): string {
+  if (matchNumber == null) {
+    return "";
+  }
+
   switch (competitionLevel) {
-    case CompetitionLevel.Qualification:
+    case "qm":
       return `Q${matchNumber}`;
 
-    case CompetitionLevel.EighthFinal:
+    case "ef":
       return `EF${matchNumber}`;
 
-    case CompetitionLevel.Quarterfinal:
+    case "qf":
       return `QF${matchNumber}`;
 
-    case CompetitionLevel.Semifinal:
+    case "sf":
       return `SF${matchNumber}`;
 
-    case CompetitionLevel.Final:
+    case "f":
       return `F${matchNumber}`;
 
     default:
@@ -26,22 +30,22 @@ export function formatMatchLabel(
 }
 
 export function formatCompetitionLevel(
-  competitionLevel: CompetitionLevel
+  competitionLevel: CompetitionLevel | null | undefined
 ): string {
   switch (competitionLevel) {
-    case CompetitionLevel.Qualification:
+    case "qm":
       return "Qualification";
 
-    case CompetitionLevel.EighthFinal:
+    case "ef":
       return "Eighth Final";
 
-    case CompetitionLevel.Quarterfinal:
+    case "qf":
       return "Quarterfinal";
 
-    case CompetitionLevel.Semifinal:
+    case "sf":
       return "Semifinal";
 
-    case CompetitionLevel.Final:
+    case "f":
       return "Final";
 
     default:
