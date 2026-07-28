@@ -1,5 +1,11 @@
 "use client";
 
+/**
+ * Final call-to-action on `/scout`. Stays disabled until an event, a
+ * match, and one of the six on-field teams are all selected — see
+ * `canStartScout` in scoutPageClient.tsx for the exact condition.
+ */
+
 import { Play } from "lucide-react";
 
 interface StartScoutButtonProps {

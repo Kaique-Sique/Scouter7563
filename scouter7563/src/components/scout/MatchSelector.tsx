@@ -1,5 +1,14 @@
 "use client";
 
+/**
+ * Match dropdown for the `/scout` screen.
+ *
+ * Mirrors `EventSelector` (src/components/dashboard/EventSelector.tsx)
+ * almost exactly — same searchable-dropdown pattern — but keyed off
+ * `MatchOption` instead of `EventOption`, and labels each entry with
+ * `formatMatchLabel` (e.g. "Q12", "SF3") instead of a plain name.
+ */
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Check,
@@ -27,7 +36,11 @@ export default function MatchSelector({
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const matchList = matches ?? [];
+  // Memoized so this doesn't produce a brand-new array identity on every
+  // render when `matches` is null — otherwise the `filteredMatches`
+  // useMemo below (which depends on `matchList`) would never hit its
+  // cache and recompute needlessly on every re-render.
+  const matchList = useMemo(() => matches ?? [], [matches]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
