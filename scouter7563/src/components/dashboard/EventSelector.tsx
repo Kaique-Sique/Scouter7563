@@ -10,7 +10,6 @@ import {
 import { EventOption } from "@/types/events";
 
 
-
 interface EventSelectorProps {
   events: EventOption[];
   selectedEvent: string;
