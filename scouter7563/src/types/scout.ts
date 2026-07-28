@@ -1,3 +1,5 @@
+import { CompetitionLevel } from "./tba/common";
+
 export interface Team {
   key: string;
   number: number;
@@ -6,7 +8,8 @@ export interface Team {
   station: "R1" | "R2" | "R3" | "B1" | "B2" | "B3";
 }
 
-export interface Match {
-  key: string;
-  name: string;
+export interface MatchOption {
+  key: string | null;
+  matchNumber: number | null;
+  competitionLevel: CompetitionLevel | null;
 }
