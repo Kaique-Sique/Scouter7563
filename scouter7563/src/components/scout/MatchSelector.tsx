@@ -65,7 +65,8 @@ export default function MatchSelector({
     return matchList.filter((match) =>
       `${formatMatchLabel(
         match.competitionLevel,
-        match.matchNumber
+        match.matchNumber,
+        match.key
       )} ${match.key}`
         .toLowerCase()
         .includes(search.toLowerCase())
@@ -117,7 +118,8 @@ export default function MatchSelector({
             : selected
               ? formatMatchLabel(
                 selected.competitionLevel,
-                selected.matchNumber
+                selected.matchNumber,
+                selected.key
               )
               : "Select Match"}
         </span>
@@ -199,7 +201,8 @@ export default function MatchSelector({
                     <p className="truncate text-sm font-medium text-white">
                       {formatMatchLabel(
                         match.competitionLevel,
-                        match.matchNumber
+                        match.matchNumber,
+                        match.key
                       )}
                     </p>
 
