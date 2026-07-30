@@ -26,10 +26,9 @@
 
 <a href="#-overview">Overview</a> ·
 <a href="#-features">Features</a> ·
-<a href="#-tech-stack">Tech Stack</a> ·
 <a href="#-getting-started">Getting Started</a> ·
-<a href="#-project-structure">Structure</a> ·
-<a href="#-contributing">Contributing</a>
+<a href="./docs/TECH_STACK.md">Tech Stack & Architecture</a> ·
+<a href="./CONTRIBUTING.md">Contributing</a>
 
 </div>
 
@@ -80,45 +79,19 @@ Scouter7563 is the single place Team 7563 uses to browse events, teams and match
 <sub>Per-team match breakdowns, timelines and custom metrics</sub>
 </td>
 <td width="33%" valign="top" align="center">
-<h3>⚡</h3>
-<b>Turbopack</b>
+<h3>📚</h3>
+<b>Docs</b>
 <br />
-<sub>Instant HMR during development, fast production builds</sub>
+<sub>Full <a href="./docs/TECH_STACK.md">tech stack & architecture</a> reference for contributors</sub>
 </td>
 <td width="33%" valign="top" align="center">
-<h3>🎨</h3>
-<b>Tailwind 4</b>
+<h3>🤝</h3>
+<b>Open to the team</b>
 <br />
-<sub>CSS-first theming, consistent design tokens across the app</sub>
+<sub>See <a href="./CONTRIBUTING.md">CONTRIBUTING.md</a> for how to jump in</sub>
 </td>
 </tr>
 </table>
-
-<br />
-
-## 🧱 Tech Stack
-
-<div align="center">
-
-<img src="https://img.shields.io/badge/Framework-Next.js_16-black?style=flat-square&logo=next.js" />
-<img src="https://img.shields.io/badge/UI-React_19-61DAFB?style=flat-square&logo=react&logoColor=101010" />
-<img src="https://img.shields.io/badge/Lang-TypeScript_5-3178C6?style=flat-square&logo=typescript&logoColor=white" />
-<img src="https://img.shields.io/badge/Style-Tailwind_4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white" />
-<br />
-<img src="https://img.shields.io/badge/Icons-lucide--react-f56565?style=flat-square&logo=lucide" />
-<img src="https://img.shields.io/badge/Icons-react--icons-e91e63?style=flat-square" />
-<img src="https://img.shields.io/badge/Charts-Recharts-8884d8?style=flat-square" />
-<img src="https://img.shields.io/badge/Lint-ESLint_9-4B32C3?style=flat-square&logo=eslint&logoColor=white" />
-<br />
-<img src="https://img.shields.io/badge/Data-TBA_API_v3-003b6f?style=flat-square" />
-<img src="https://img.shields.io/badge/Storage-PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white" />
-
-</div>
-
-<br />
-
-> [!NOTE]
-> The old FastAPI backend is **retired**. TBA proxying and scouting persistence now live inside this repo as an internal TypeScript layer (`src/lib/api`) — server-only, nothing exposed over HTTP.
 
 <br />
 
@@ -143,7 +116,7 @@ npm install
 <tr><td><b>3</b></td><td>
 
 ```bash
-cp .env.exemple .env.local   # fill in TBA_KEY + DB_* — see table below
+cp .env.exemple .env.local   # fill in TBA_KEY + DB_* — see docs/TECH_STACK.md
 ```
 
 </td></tr>
@@ -157,94 +130,6 @@ npm run dev
 </table>
 
 <div align="center">→ open <a href="http://localhost:3000"><code>localhost:3000</code></a></div>
-
-<br />
-
-<details>
-<summary><b>Environment variables</b></summary>
-<br />
-
-| Variable | Required | Purpose |
-|:--|:--:|:--|
-| `TBA_KEY` | ✅ | [TBA](https://www.thebluealliance.com/account) read key |
-| `TBA_BASE_URL` | ✅ | `https://www.thebluealliance.com/api/v3` |
-| `DB_NAME` | ✅ | PostgreSQL database |
-| `DB_USER` | ✅ | PostgreSQL user |
-| `DB_PASSWORD` | ✅ | PostgreSQL password |
-| `DB_HOST` | ✅ | PostgreSQL host |
-| `DB_PORT` | ✅ | PostgreSQL port |
-
-</details>
-
-<details>
-<summary><b>Available scripts</b></summary>
-<br />
-
-| Command | Description |
-|:--|:--|
-| `npm run dev` | Dev server with Turbopack |
-| `npm run build` | Production build |
-| `npm run start` | Serve production build |
-| `npm run lint` | ESLint across the project |
-
-</details>
-
-<br />
-
-## 🗂️ Project Structure
-
-<details open>
-<summary><b>Expand tree</b></summary>
-
-```
-frcscouter7563-frontend/
-├── public/                 # Static assets
-└── src/
-    ├── app/                 # Routes & layouts (App Router)
-    ├── components/          # cards · dashboard · scout · team · ui
-    ├── lib/
-    │   ├── api/tba/         # Internal TBA API v3 client
-    │   └── config/          # Typed .env access
-    ├── types/               # Shared types, incl. types/tba
-    └── utils/               # Formatting & helpers
-```
-
-</details>
-
-<br />
-
-## 🧭 Routing
-
-<div align="center">
-
-| Route | Description |
-|:--|:--|
-| `/` | Dashboard — current event, live stats |
-| `/events` → `/events/{key}` | Event browser & details |
-| `/teams` → `/teams/{key}` | Team directory & profiles |
-| `/matches/{key}` → `/{key}/{team}` | Match & per-team scout view |
-| `/scout` → `/scout/{match}/{team}` | New scouting entry |
-
-</div>
-
-<div align="center"><sub>Full route map: <a href="../README.md">top-level architecture guide</a></sub></div>
-
-<br />
-
-## 🤝 Contributing
-
-<table>
-<tr><td>
-
-Internal tool for Team 7563 — teammates welcome:
-
-1. Branch off `main`
-2. Keep components typed, colocated under `src/components/<feature>`
-3. `npm run lint && npm run build` before opening a PR
-4. Open the PR with a short description
-
-</td></tr>
-</table>
 
 <br />
 
