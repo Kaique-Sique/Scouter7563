@@ -1,13 +1,23 @@
 <div align="center">
 
-# 🤝 Contributing to Scouter7563
+<img src="https://raw.githubusercontent.com/Kaique-Sique/FRCScouter7563-Frontend/main/scouter7563/public/logo.png" alt="Scouter7563" width="70" onerror="this.style.display='none'" />
+
+# Contributing to Scouter7563
 
 <sub>How Team 7563 works on this repo day to day</sub>
 
 <br />
 
+<img src="https://img.shields.io/badge/team-FRC_7563-blue?style=flat-square" />
+<img src="https://img.shields.io/badge/status-active_development-2ea043?style=flat-square" />
+
+<br /><br />
+
 <a href="./README.md">README</a> ·
-<a href="./docs/TECH_STACK.md">Tech Stack & Architecture</a>
+<a href="./docs/TECH_STACK.md">Tech Stack & Architecture</a> ·
+<a href="#%EF%B8%8F-local-setup">Local Setup</a> ·
+<a href="#-branching">Branching</a> ·
+<a href="#-before-opening-a-pr">PR Checklist</a>
 
 </div>
 
@@ -27,7 +37,7 @@ npm install
 </td></tr>
 <tr><td><b>2</b></td><td>
 
-Copy `.env.exemple` to `.env.local` and fill in the required variables — see [docs/TECH_STACK.md](./docs/TECH_STACK.md#️-environment-variables).
+Copy `.env.exemple` to `.env.local` and fill in the required variables — see <a href="./docs/TECH_STACK.md#️-environment-variables">docs/TECH_STACK.md</a>.
 
 </td></tr>
 <tr><td><b>3</b></td><td>
@@ -68,34 +78,80 @@ Confirm `localhost:3000` loads before making changes.
 </tr>
 </table>
 
-<sub>Keep branches scoped to a single feature or fix — smaller PRs are easier to review, especially close to competition.</sub>
+<div align="center"><sub>Keep branches scoped to a single feature or fix — smaller PRs are easier to review, especially close to competition.</sub></div>
 
 <br />
 
 ## ✅ Before opening a PR
 
-- [ ] `npm run lint` passes with no new warnings
-- [ ] `npm run build` completes successfully
-- [ ] UI strings are in English, consistent with the rest of the app
-- [ ] No TBA keys, DB credentials, or other secrets committed
-- [ ] Server-only logic (TBA calls, DB access) stays in `src/lib/api` and isn't leaked into client components
+<div align="center">
+
+<table>
+<tr><td>☐</td><td align="left"><code>npm run lint</code> passes with no new warnings</td></tr>
+<tr><td>☐</td><td align="left"><code>npm run build</code> completes successfully</td></tr>
+<tr><td>☐</td><td align="left">UI strings are in English, consistent with the rest of the app</td></tr>
+<tr><td>☐</td><td align="left">No TBA keys, DB credentials, or other secrets committed</td></tr>
+<tr><td>☐</td><td align="left">Server-only logic (TBA calls, DB access) stays in <code>src/lib/api</code> and isn't leaked into client components</td></tr>
+</table>
+
+</div>
 
 <br />
 
 ## 📝 Commits & PRs
 
-- Use clear, imperative commit messages (e.g. `Fix match dropdown navigation bug`, not `fixed stuff`)
-- Reference related issues in the PR description when applicable
-- Describe **what** changed and **why**, and include screenshots/GIFs for UI changes
-- Keep PRs focused; unrelated refactors should be their own PR
+<table>
+<tr>
+<td width="50%" valign="top">
+<h3 align="center">✅ Do</h3>
+
+- Clear, imperative commit messages (`Fix match dropdown navigation bug`)
+- Reference related issues in the PR description
+- Describe **what** changed and **why**
+- Screenshots/GIFs for UI changes
+- Keep PRs focused on one thing
+
+</td>
+<td width="50%" valign="top">
+<h3 align="center">🚫 Avoid</h3>
+
+- Vague messages (`fixed stuff`)
+- Bundling unrelated refactors into one PR
+- Silent UI changes with no visual before/after
+- Mixing feature work with formatting-only diffs
+
+</td>
+</tr>
+</table>
 
 <br />
 
 ## 🎨 Code style
 
-- Follow the existing patterns in `src/lib/api`, `src/components`, and `src/types` — typed models over `any`, server components by default, client components only where interactivity is needed
-- Run `npm run lint` and fix issues before pushing
-- Match the Tailwind design tokens already used in the app instead of introducing one-off styles
+<table>
+<tr>
+<td width="33%" valign="top" align="center">
+<h3>🧬</h3>
+<b>Typed patterns</b>
+<br />
+<sub>Follow <code>src/lib/api</code>, <code>src/components</code>, <code>src/types</code> — typed models over <code>any</code></sub>
+</td>
+<td width="33%" valign="top" align="center">
+<h3>🖥️</h3>
+<b>Server-first</b>
+<br />
+<sub>Server components by default, client components only where interactivity is needed</sub>
+</td>
+<td width="33%" valign="top" align="center">
+<h3>🎨</h3>
+<b>Design tokens</b>
+<br />
+<sub>Match the existing Tailwind tokens instead of one-off styles</sub>
+</td>
+</tr>
+</table>
+
+<div align="center"><sub>Run <code>npm run lint</code> and fix issues before pushing.</sub></div>
 
 <br />
 
@@ -105,9 +161,15 @@ Confirm `localhost:3000` loads before making changes.
 <summary><b>What to include</b></summary>
 <br />
 
-- A clear title and description
-- Steps to reproduce (for bugs) or the use case (for features)
-- Screenshots if relevant, especially for anything scouting-form related
+<div align="center">
+
+<table>
+<tr><td align="left">A clear title and description</td></tr>
+<tr><td align="left">Steps to reproduce (for bugs) or the use case (for features)</td></tr>
+<tr><td align="left">Screenshots if relevant, especially for anything scouting-form related</td></tr>
+</table>
+
+</div>
 
 </details>
 
