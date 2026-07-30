@@ -16,10 +16,11 @@ import UpcomingMatches, {
   Match,
 } from "@/components/dashboard/UpcomingMatches";
 import { EventOption} from "@/types/events";
+import { DashboardDataEvent } from "@/types/dashboard";
 
 export interface DashboardPageProps{
     EventsList: EventOption[] | null;
-
+    DashboardData: DashboardDataEvent | null;
 }
 
 export default function DashboardPageClient({

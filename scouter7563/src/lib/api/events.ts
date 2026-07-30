@@ -1,4 +1,5 @@
 import * as tba from "@/lib/api/tba";
+import { DashboardDataEvent } from "@/types/dashboard";
 import { Event, EventListItem, EventOption, } from "@/types/events";
 import { TBAEvent } from "@/types/tba/event";
 
@@ -69,8 +70,7 @@ export async function getEventList(): Promise<EventListItem[] | null> {
     }
 }
 
-export async function getEventOptions(): Promise<EventOption[] | null> 
-{
+export async function getEventOptions(): Promise<EventOption[] | null> {
     try {
         // Fetch the date from tba 
         const eventsListTBA = await tba.getEventsByYearSimple(2025);
@@ -88,6 +88,34 @@ export async function getEventOptions(): Promise<EventOption[] | null>
 
     } catch {
         // year not valid, or TBA request failed — the caller
+        return null;
+    }
+}
+
+export async function getEventDataDashboard(event_key: string): Promise<DashboardDataEvent | null> {
+    try {
+        // Fetch the date from tba 
+        const [teamsKeys, matchs] = await Promise.all([
+            tba.getEventTeamsKeys(event_key),
+            tba.getEventMatches(event_key)
+        ]);
+
+
+        const playedMatchKeys = matchs
+            .filter(match => match.post_result_time !== null)
+            .map(match => match.key);
+
+        return {
+            EventKey: event_key,
+
+            MatchsKeys: matchs.map(match => match.key),
+            teamsKeys: teamsKeys,
+
+            PlayedMatches: playedMatchKeys,
+        };
+
+    } catch {
+        // key not valid, or TBA request failed — the caller
         return null;
     }
 }

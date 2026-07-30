@@ -1,12 +1,23 @@
 import DashboardPageClient from "./dashboardPageClient";
-import { getEventOptions} from "@/lib/api/events";
+import { getEventDataDashboard, getEventOptions} from "@/lib/api/events";
 
-export default async function Home() {
+
+interface Props {
+  searchParams: Promise<{
+    event?: string;
+  }>;
+}
+export default async function Home({ searchParams }: Props) {
   const events = await getEventOptions();
 
+  const params = await searchParams;
+
+  const DashboardData = params.event ? await getEventDataDashboard(params.event) : null;
+  
   return (
     <DashboardPageClient
       EventsList={events ?? []}
+      DashboardData={DashboardData}
     />
   );
 }
