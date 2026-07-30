@@ -2,30 +2,34 @@ import { CompetitionLevel } from "@/types/tba/common";
 
 export function formatMatchLabel(
   competitionLevel: CompetitionLevel | null | undefined,
-  matchNumber: number | null | undefined
+  matchNumber: number | null | undefined,
+  key: string | null | undefined
 ): string {
   if (matchNumber == null) {
     return "";
   }
 
+  let adition = key ? key.slice(key.indexOf("_") + 1) : null;
+  adition = adition ? adition.slice(2) : null;
+
   switch (competitionLevel) {
     case "qm":
-      return `Q${matchNumber}`;
+      return `Q${adition ? adition : matchNumber}`;
 
     case "ef":
-      return `EF${matchNumber}`;
+      return `EF${adition ? adition : matchNumber}`;
 
     case "qf":
-      return `QF${matchNumber}`;
+      return `QF${adition ? adition : matchNumber}`;
 
     case "sf":
-      return `SF${matchNumber}`;
+      return `SF${adition ? adition : matchNumber}`;
 
     case "f":
-      return `F${matchNumber}`;
+      return `F${adition ? adition : matchNumber}`;
 
     default:
-      return `${matchNumber}`;
+      return `${adition ? adition : matchNumber}`;
   }
 }
 
