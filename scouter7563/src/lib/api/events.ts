@@ -92,26 +92,39 @@ export async function getEventOptions(): Promise<EventOption[] | null> {
     }
 }
 
+/**
+ * Fetches the aggregated stats the dashboard needs for a single event:
+ * every team key, every match key, and which of those matches already
+ * have a result. This is the only data source `/` is allowed to read
+ * from — the dashboard screen never calls TBA directly, it goes through
+ * this function (see `DashboardDataEvent` in src/types/dashboard.ts).
+ *
+ * @param event_key TBA event key (e.g. "2025sao").
+ * @returns Aggregated `DashboardDataEvent`, or `null` if the key is
+ * invalid or the TBA request fails — the caller (src/app/page.tsx)
+ * falls back to an empty dashboard in that case.
+ */
 export async function getEventDataDashboard(event_key: string): Promise<DashboardDataEvent | null> {
     try {
-        // Fetch the date from tba 
-        const [teamsKeys, matchs] = await Promise.all([
+        // Fetch teams and matches in parallel — independent TBA endpoints.
+        const [teamKeys, matches] = await Promise.all([
             tba.getEventTeamsKeys(event_key),
             tba.getEventMatches(event_key)
         ]);
 
-
-        const playedMatchKeys = matchs
+        // A match only counts as "played" once TBA has a post-result
+        // timestamp for it — `null` still means scheduled/in-progress.
+        const playedMatchKeys = matches
             .filter(match => match.post_result_time !== null)
             .map(match => match.key);
 
         return {
-            EventKey: event_key,
+            eventKey: event_key,
 
-            MatchsKeys: matchs.map(match => match.key),
-            teamsKeys: teamsKeys,
+            matchKeys: matches.map(match => match.key),
+            teamKeys: teamKeys,
 
-            PlayedMatches: playedMatchKeys,
+            playedMatchKeys: playedMatchKeys,
         };
 
     } catch {
