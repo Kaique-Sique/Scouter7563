@@ -5,6 +5,7 @@ import EventHeader from "@/components/events/event/EventHeader";
 
 interface EventKeyProps {
     eventKey: string;
+    tab?: string | null;
 }
 
 
