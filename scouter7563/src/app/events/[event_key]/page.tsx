@@ -1,19 +1,32 @@
-import EventHeader from "@/components/events/event/EventHeader";
+import { notFound } from "next/navigation";
 import EventKeyClient from "./EventKeyClient";
+import { getEvent } from "@/lib/api/tba";
 
-interface searchDefaultInput{
+interface EventPageProps {
+    params: Promise<{
+        event_key: string;
+    }>;
     searchParams: Promise<{
-        tab: string | null;
+        tab?: string;
     }>;
 }
 
-
-export default async function TeamsPage({
+export default async function EventPage({
+    params,
     searchParams,
-}: searchDefaultInput) {
+}: EventPageProps) {
+    const { event_key } = await params;
+    const { tab = "overview" } = await searchParams;
 
+    const event = await getEvent(event_key);
+
+    if (event_key !== "2025brba") {
+        notFound();
+    }
 
     return (
-        <EventKeyClient />
+        <EventKeyClient
+            eventKey={event_key}
+        />
     );
 }
