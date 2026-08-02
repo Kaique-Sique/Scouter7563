@@ -4,7 +4,12 @@ import { Event, EventListItem, EventOption, } from "@/types/events";
 import { TBAEvent } from "@/types/tba/event";
 
 /** TODO: implement api on /teams using this function below */
-export async function getEvent(event_key: string): Promise<Event | null> { return null; }
+export async function getEvent(event_key: string): Promise<Event | null> {
+    // Referenced (no-op) just to satisfy no-unused-vars until this stub
+    // is actually implemented — see TODO above.
+    void event_key;
+    return null;
+}
 
 
 /**

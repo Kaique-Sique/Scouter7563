@@ -1,5 +1,17 @@
 "use client";
 
+/**
+ * TeamCard (scout alliance variant)
+ *
+ * Selectable card for one team inside an `AlliancePanel` on `/scout`
+ * — shows avatar/number/nickname/station and a selected state.
+ *
+ * NOTE: this is a different component from
+ * `src/components/team/TeamCard.tsx` (used on `/teams`, no selection
+ * state, different props). Same name, different folder/purpose — a
+ * shared `TeamAvatar`-style component could de-duplicate the avatar
+ * fallback logic between the two if that's ever worth doing.
+ */
 import Image from "next/image";
 
 interface TeamCardProps {

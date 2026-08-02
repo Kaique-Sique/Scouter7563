@@ -1,3 +1,12 @@
+/**
+ * EventSection
+ *
+ * One labeled group of events on `/events` (e.g. "Week 3",
+ * "Championship"). `sectionRef` registers the rendered `<section>`'s
+ * DOM node back into `EventsPageClient`'s ref map so `EventFilters`
+ * can scroll to / observe it — see the callback-ref usage in
+ * `EventsPageClient.tsx`.
+ */
 import EventCard from "@/components/events/EventCard";
 import { EventListItem } from "@/types/events";
 

@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * EventCard
+ *
+ * Clickable row for one event on `/events` — navigates to
+ * `/events/[event_key]` on click, with a favorite star that stops
+ * propagation so it doesn't also trigger the navigation.
+ */
 import Link from "next/link";
 import { Star, MapPin, CalendarDays } from "lucide-react";
 import { EventListItem } from "@/types/events";

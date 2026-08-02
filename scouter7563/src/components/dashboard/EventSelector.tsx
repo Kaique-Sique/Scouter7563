@@ -1,5 +1,14 @@
 "use client";
 
+/**
+ * EventSelector
+ *
+ * Searchable dropdown for picking the "current event" on the
+ * dashboard (and reused with the same shape on `/scout`). Purely
+ * presentational/interactive — `onChange` is the only way it talks to
+ * its parent; the parent owns writing `?event=` to the URL and
+ * re-fetching from TBA (see dashboardPageClient.tsx / scoutPageClient.tsx).
+ */
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CalendarDays,
@@ -26,6 +35,9 @@ export default function EventSelector({
 
   const containerRef = useRef<HTMLDivElement>(null);
 
+  // Closes the dropdown (and clears the in-progress search) on any
+  // click outside the component — standard "click-away" pattern for
+  // a custom (non-<select>) dropdown.
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (

@@ -1,5 +1,14 @@
 "use client";
 
+/**
+ * Sidebar
+ *
+ * Slide-out navigation drawer, toggled by `AppLayout`'s hamburger
+ * button. Highlights the active section via `usePathname()` (prefix
+ * match, so `/teams/frc7563` still highlights "Teams"). Several links
+ * (Compare, Rankings, Favorites, Settings) point at routes that don't
+ * exist yet — they're placeholders for planned screens.
+ */
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";

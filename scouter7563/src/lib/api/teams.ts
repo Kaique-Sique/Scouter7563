@@ -24,6 +24,12 @@ function findSocialUrl(media: TBATeamMedia[], type: string): string | undefined 
 }
 
 
+/**
+ * TBA's team `name` field is really "Sponsor A / Sponsor B / School",
+ * slash-separated, and can get long. This keeps only the first two
+ * segments for display and collapses the rest into a "+N" suffix
+ * (e.g. "Sponsor A / Sponsor B +3") so it fits in cards/headers.
+ */
 function organizationFormater(organization: string) {
   if (!organization) return organization;
 

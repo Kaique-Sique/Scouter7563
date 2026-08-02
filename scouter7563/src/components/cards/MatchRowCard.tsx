@@ -1,3 +1,11 @@
+/**
+ * MatchRow (default export of MatchRowCard.tsx)
+ *
+ * Compact row summarizing one match: its label, an optional live
+ * status pill, and the red/blue alliance team badges. Currently only
+ * used with mock data (dashboard's UpcomingMatches has no real feed
+ * yet — see the TODO in dashboardPageClient.tsx).
+ */
 import TeamBadge from "@/components/ui/TeamBadge";
 
 interface Team {

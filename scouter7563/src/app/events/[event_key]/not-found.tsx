@@ -1,5 +1,11 @@
 import Link from "next/link";
 
+/**
+ * Route-specific 404, shown when `page.tsx` calls `notFound()`
+ * because `getEvent(event_key)` returned null (invalid/unknown event
+ * key). Takes over from the global `src/app/not-found.tsx` for this
+ * segment.
+ */
 export default function NotFound() {
   return (
     <main className="flex h-[70vh] flex-col items-center justify-center gap-4">
