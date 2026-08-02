@@ -5,7 +5,6 @@ import {
   Building2,
   Calendar,
   MapPin,
-  Users,
   Star,
   GitCompare,
   Share2,

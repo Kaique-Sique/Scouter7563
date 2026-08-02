@@ -1,3 +1,9 @@
+/**
+ * Loading skeleton for `/teams/[team_key]`, shown automatically by
+ * Next.js while the server component (page.tsx) awaits `getTeam()`.
+ * Shape roughly mirrors the real layout (header block + sidebar/content
+ * columns) so there's no layout shift once real content streams in.
+ */
 export default function Loading() {
   return (
     <main className="mx-auto max-w-7xl px-6 py-6">

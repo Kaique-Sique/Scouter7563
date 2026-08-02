@@ -1,3 +1,14 @@
+/**
+ * `/teams/[team_key]` — single team profile (server component).
+ *
+ * `team` (header, sidebar, links, avatar) is real data from `getTeam`
+ * (TBA). Everything below the header — overview stats, charts, scout
+ * stats, static (OPR/DPR/EPA) stats — is still hardcoded placeholder
+ * data: there's no scouting-data or per-team-analytics API yet, so
+ * these are wired up structurally but not to real numbers. Swap the
+ * literals below for real data once that API exists; don't fabricate
+ * numbers elsewhere in the meantime.
+ */
 import TeamOverviewStats from "@/components/team/stats/TeamOverviewStats";
 import StaticStats from "@/components/team/stats/StaticStats";
 import TeamHeader from "@/components/team/TeamHeader";
@@ -24,7 +35,7 @@ export default async function TeamPage({
 
     const team = await getTeam(team_key);
 
-    
+    // `getTeam` returns null for an invalid key or a failed TBA request.
     if (!team) {
         notFound();
     }
@@ -37,7 +48,7 @@ export default async function TeamPage({
             <TeamHeader team={team} />
 
 
-            {/* Main cards */}
+            {/* Main cards — MOCK DATA, see file header comment. */}
             <div className="mt-6">
 
                 <TeamOverviewStats
@@ -62,12 +73,12 @@ export default async function TeamPage({
             <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
 
 
-                {/* Sidebar */}
+                {/* Sidebar — real team data */}
                 <TeamSidebar team={team} />
 
 
 
-                {/* Content */}
+                {/* Content — charts/stats below are still MOCK DATA. */}
                 <section className="min-w-0 space-y-6">
 
                     <PerformanceChart
@@ -148,6 +159,10 @@ export default async function TeamPage({
                     />
 
                     {/*
+                    Pie charts disabled for now — kept here (rather than
+                    deleted) since they're ready to re-enable once real
+                    scoring-breakdown data exists; ScoringChart/EndgameChart
+                    components already exist under team/charts.
                     <ScoringChart
                         data={[
                             {

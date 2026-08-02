@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * TeamHeader
+ *
+ * Hero block for `/teams/[team_key]`: banner + avatar (or a number
+ * fallback when the team has none), name/org, quick facts, and
+ * external links (website/social/TBA/FIRST). Fully driven by real
+ * `Team` data from `getTeam` — no mocked fields here.
+ */
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -61,10 +69,11 @@ export default function TeamHeader({
                     <div className="relative h-32 w-32 overflow-hidden rounded-2xl border-4 border-slate-900 bg-slate-800">
 
                         {team.avatar ? (
-                            <img
+                            <Image
                                 src={team.avatar}
                                 alt={team.nickname ?? "team logo"}
-                                className="h-full w-full object-cover"
+                                fill
+                                className="object-cover"
                             />
                         ) : (
                             <div className="flex h-full items-center justify-center text-4xl font-bold">

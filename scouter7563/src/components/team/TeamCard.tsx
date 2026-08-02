@@ -1,5 +1,16 @@
 "use client";
 
+/**
+ * TeamCard (team-list variant)
+ *
+ * Clickable row for one team on `/teams` — navigates to
+ * `/teams/[team_key]`, with a favorite star and EPA/"Scouted" badges
+ * that only render when that data is present.
+ *
+ * NOTE: different component from `src/components/cards/TeamCard.tsx`
+ * (the selectable alliance-panel card used on `/scout`). Same name,
+ * different folder/purpose.
+ */
 import Image from "next/image";
 import Link from "next/link";
 import { Star, ShieldCheck } from "lucide-react";

@@ -1,3 +1,11 @@
+/**
+ * TeamSection
+ *
+ * One labeled batch of teams, meant to pair with `TeamFilters`'
+ * scroll-spy navigation (see NOTE in TeamFilters.tsx — not currently
+ * wired up in `TeamsPageClient.tsx`, which renders teams directly
+ * instead of through this component + batching).
+ */
 import TeamCard from "@/components/team/TeamCard";
 import { TeamListItem } from "@/types/team";
 

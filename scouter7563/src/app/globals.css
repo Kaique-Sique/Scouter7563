@@ -1,10 +1,16 @@
+/* Global stylesheet, imported once from src/app/layout.tsx. */
+
 @import "tailwindcss";
 
+/* Dark theme base colors — the whole app is dark-mode only,
+   there's no light-theme toggle. */
 :root {
   --background: rgb(3, 6, 23);
   --foreground: #f8fafc;
 }
 
+/* Exposes the CSS vars above as Tailwind theme tokens
+   (bg-background, text-foreground, font-sans, etc). */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -27,6 +33,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Loading-skeleton "shine" sweep, used by shimmer/skeleton placeholders. */
 @keyframes shine {
   from {
     transform: translateX(-100%);
@@ -37,6 +44,7 @@ body {
   }
 }
 
+/* Diagonal stripes animation for in-progress progress bars (ProgressBar.tsx). */
 @keyframes progress-stripes {
   from {
     background-position: 0 0;
@@ -47,6 +55,8 @@ body {
   }
 }
 
+/* Shine sweep specific to progress bars (slightly wider travel than
+   the generic `shine` keyframes above, tuned for bar width). */
 @keyframes progress-shine {
   from {
     transform: translateX(-150%);

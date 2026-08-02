@@ -23,7 +23,7 @@ export default function NotFound() {
         </h1>
 
         <p className="mt-3 max-w-md text-sm text-slate-400">
-          The page you're looking for doesn't exist or may have been moved.
+          The page you&apos;re looking for doesn&apos;t exist or may have been moved.
         </p>
       </section>
 

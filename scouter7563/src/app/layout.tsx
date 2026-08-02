@@ -1,3 +1,10 @@
+/**
+ * Root layout — wraps every route in the app.
+ *
+ * Pulls in the global stylesheet once here (Tailwind + custom theme
+ * vars/animations, see globals.css) and wraps all page content in
+ * `AppLayout`, which owns the persistent sidebar + header chrome.
+ */
 import type { Metadata } from "next";
 import "./globals.css";
 
