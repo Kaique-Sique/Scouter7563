@@ -16,11 +16,12 @@
 
 import Link from "next/link";
 import EventHeader from "@/components/events/event/EventHeader";
-import { EventTab } from "@/types/events";
+import { EventFull, EventTab } from "@/types/events";
 
 interface EventKeyProps {
     eventKey: string;
     tab: EventTab;
+    event: EventFull;
 }
 
 /** Simple placeholder shown for tabs that aren't wired to real data yet. */
@@ -38,7 +39,7 @@ function ComingSoon({ label }: { label: string }) {
     );
 }
 
-function EventTabContent({ eventKey, tab }: EventKeyProps) {
+function EventTabContent({ eventKey, tab, }: EventKeyProps) {
     switch (tab) {
         case EventTab.Overview:
             return <ComingSoon label="Overview" />;
@@ -80,12 +81,11 @@ function EventTabContent({ eventKey, tab }: EventKeyProps) {
     }
 }
 
-export default function EventKeyClient({ eventKey, tab }: EventKeyProps) {
+export default function EventKeyClient({ eventKey, tab, event }: EventKeyProps) {
     return (
         <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 overflow-x-hidden px-4 py-6 sm:px-6">
-            <EventHeader eventKey={eventKey} activeTab={tab} />
-
-            <EventTabContent eventKey={eventKey} tab={tab} />
+            <EventHeader eventKey={eventKey} activeTab={tab} event={event} />
+            <EventTabContent eventKey={eventKey} tab={tab} event={event} />
         </main>
     );
 }
