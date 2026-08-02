@@ -20,6 +20,8 @@ jobs:
           node-version: 22
           cache: npm
 
+      - run: cd Scouter7563
+
       - run: npm ci
 
       - run: npm run lint
