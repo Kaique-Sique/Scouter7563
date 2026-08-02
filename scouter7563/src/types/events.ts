@@ -21,7 +21,7 @@ export interface WebcastUrl {
 }
 
 
-export interface Event {
+export interface EventFull {
     event_key?: string | null;
     name?: string | null;
     city?: string | null;

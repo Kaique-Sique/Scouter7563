@@ -10,6 +10,7 @@
 import Link from "next/link";
 import { Star, MapPin, CalendarDays } from "lucide-react";
 import { EventListItem } from "@/types/events";
+import { formatEventDateRange } from "@/utils/formatDates";
 
 interface EventCardProps {
     event: EventListItem;
@@ -74,7 +75,7 @@ export default function EventCard({
 
                     <span className="flex items-center gap-2">
                         <CalendarDays size={15} />
-                        {event.startDate} - {event.endDate}
+                        {formatEventDateRange(event.startDate ?? null, event.endDate ?? null)}
                     </span>
                 </div>
 

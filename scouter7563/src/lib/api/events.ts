@@ -1,6 +1,6 @@
 import * as tba from "@/lib/api/tba";
 import { DashboardDataEvent } from "@/types/dashboard";
-import { Event, EventListItem, EventOption, EventWebcastType, WebcastUrl, } from "@/types/events";
+import { EventFull, EventListItem, EventOption, EventWebcastType, WebcastUrl, } from "@/types/events";
 import { TBAEvent } from "@/types/tba/event";
 
 /**
@@ -80,7 +80,7 @@ function AddWebcastsUrls(
  * @returns The mapped `Event`, or `null` if the team doesn't exist / the
  * TBA request fails (network error, invalid key, TBA outage, etc).
  */
-export async function getEvent(event_key: string): Promise<Event | null> {
+export async function getEventFull(event_key: string): Promise<EventFull | null> {
     try {
 
         /** Fetch all required data in parallel */

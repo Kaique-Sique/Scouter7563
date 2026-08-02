@@ -20,7 +20,8 @@
 
 import Link from "next/link";
 import { Calendar, MapPin, Swords, Users } from "lucide-react";
-import { EventTab } from "@/types/events";
+import { EventFull, EventTab } from "@/types/events";
+import { formatEventDateRange } from "@/utils/formatDates";
 
 /** Order + labels for the tab strip. Single source of truth so the
  *  nav can't drift out of sync with the `EventTab` enum. */
@@ -38,16 +39,18 @@ interface EventHeaderProps {
     eventKey: string;
     /** Currently active tab, already validated server-side in `page.tsx`. */
     activeTab: EventTab;
+
+    event: EventFull | null;
 }
 
-export default function EventHeader({ eventKey, activeTab }: EventHeaderProps) {
+export default function EventHeader({ eventKey, activeTab, event }: EventHeaderProps) {
     return (
         <section className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-lg">
 
             <div className="p-8">
                 <div className="flex items-center gap-2">
                     <h1 className="text-4xl font-bold tracking-tight">
-                        Wolverine Robotics Competition 2026
+                        {event?.name || " ? "}
                     </h1>
 
                     <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3 py-1 text-sm font-medium text-emerald-400">
@@ -59,24 +62,24 @@ export default function EventHeader({ eventKey, activeTab }: EventHeaderProps) {
                 <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2 text-sm text-slate-400">
                         <MapPin className="h-4 w-4" />
-                        São Paulo, Brazil
+                        {event?.city}, {event?.country}
                     </div>
                 </div>
 
                 <div className="mt-2 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm text-slate-400">
                     <span className="flex items-center gap-2">
                         <Calendar className="h-4 w-4" />
-                        Mar 18–21
+                        {formatEventDateRange(event?.startDate ?? null, event?.endDate ?? null)}
                     </span>
 
                     <span className="flex items-center gap-2">
                         <Users className="h-4 w-4" />
-                        48 Teams
+                        {event?.teams ?? " ? "}
                     </span>
 
                     <span className="flex items-center gap-2">
                         <Swords className="h-4 w-4" />
-                        90 Matches
+                        {event?.matchs ?? " ? "}
                     </span>
                 </div>
             </div>

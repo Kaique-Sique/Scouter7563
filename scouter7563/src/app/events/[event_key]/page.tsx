@@ -19,6 +19,7 @@
 import { notFound } from "next/navigation";
 import EventKeyClient from "./EventKeyClient";
 import { EventTab } from "@/types/events";
+import { getEventFull } from "@/lib/api/events";
 
 interface EventPageProps {
     params: Promise<{
@@ -36,7 +37,7 @@ export default async function EventPage({
     const { event_key } = await params;
     const { tab = EventTab.Overview } = await searchParams;
 
-    const event = await getEvent(event_key);
+    const event = await getEventFull(event_key);
 
     if (!event) {
         notFound();
@@ -51,7 +52,7 @@ export default async function EventPage({
     return (
         <EventKeyClient
             eventKey={event_key}
-            //event={event}
+            event={event}
             tab={validTab}
         />
     );
