@@ -1,16 +1,7 @@
 import * as tba from "@/lib/api/tba";
 import { DashboardDataEvent } from "@/types/dashboard";
-import { Event, EventListItem, EventOption, } from "@/types/events";
+import { Event, EventListItem, EventOption, EventWebcastType, WebcastUrl, } from "@/types/events";
 import { TBAEvent } from "@/types/tba/event";
-
-/** TODO: implement api on /teams using this function below */
-export async function getEvent(event_key: string): Promise<Event | null> {
-    // Referenced (no-op) just to satisfy no-unused-vars until this stub
-    // is actually implemented — see TODO above.
-    void event_key;
-    return null;
-}
-
 
 /**
  * test if week is null
@@ -32,6 +23,104 @@ function WeekCalculator(event: TBAEvent): string | undefined {
     return `${event.week}`;
 }
 
+const WEBCAST_URLS: Record<EventWebcastType, string> = {
+    [EventWebcastType.YouTube]:
+        "https://www.youtube.com/watch?v={channel}",
+
+    [EventWebcastType.Twitch]:
+        "https://www.twitch.tv/{channel}",
+
+    [EventWebcastType.TwitchChannel]:
+        "https://www.twitch.tv/{channel}",
+
+    [EventWebcastType.FacebookLive]:
+        "https://www.facebook.com/{channel}",
+
+    [EventWebcastType.Livestream]:
+        "https://livestream.com/{channel}",
+};
+
+
+/**
+ * this function adds the url to the webcasts array, based on the type and channel
+ * @param webcasts 
+ * @returns 
+ */
+function AddWebcastsUrls(
+    webcasts: WebcastUrl[] | null): WebcastUrl[] | null {
+    if (!webcasts) return null;
+
+    try {
+
+        return webcasts.map((webcast) => ({
+            ...webcast,
+            url: WEBCAST_URLS[webcast.type].replace(
+                "{channel}",
+                webcast.channel
+            ),
+        }));
+    } catch {
+        return null;
+    }
+
+}
+
+
+/**
+ * Fetches all from from The Blue Alliance API and adapts it to our app-level
+ * in `Event` list shape (src/types/events.ts).
+ *
+ * This adapter step exists because `TBAEvent` (src/types/tba/event.ts)
+ * mirrors the raw TBA response — several fields there are `string | null`
+ * or `number | null` since TBA returns `null` for missing data. Our own
+ * `Event` type uses optional fields (`field?: string`) instead, which
+ * TypeScript does NOT treat as equivalent to `null`. Every `?? undefined`
+ * below is bridging that gap.
+ *
+ * @returns The mapped `Event`, or `null` if the team doesn't exist / the
+ * TBA request fails (network error, invalid key, TBA outage, etc).
+ */
+export async function getEvent(event_key: string): Promise<Event | null> {
+    try {
+
+        /** Fetch all required data in parallel */
+        const [teamKeys, matches, event] = await Promise.all([
+            tba.getEventTeamsKeys(event_key),
+            tba.getEventMatches(event_key),
+            tba.getEvent(event_key)
+        ]);
+
+        return { // Map TBAEvent to our app-level Event shape
+            event_key: event.key,
+            name: event.name,
+            city: event.city,
+            country: event.country,
+            startDate: event.start_date,
+            endDate: event.end_date,
+            teams: teamKeys.length ?? null,
+            matchs: matches.length ?? null,
+            favorite: null, // TODO - implement favorites using db
+            week: WeekCalculator(event), // WeekCalculator returns string | undefined, which is compatible with Event.week
+            postalCode: event.postal_code,
+            location_name: event.location_name,
+            address: event.address,
+
+            teamsKeys: teamKeys,
+            matchsKeys: matches.map(match => match.key),
+
+            /** Webcasts for the event*/
+            webcasts: AddWebcastsUrls(
+                event.webcasts?.map((webcast) => ({
+                    type: webcast.type as EventWebcastType,
+                    channel: webcast.channel,
+                    date: webcast.date ?? null,
+                })) ?? null
+            )
+        }
+    } catch {
+        return null;
+    }
+}
 
 /**
  * Fetches all from from The Blue Alliance API and adapts it to our app-level

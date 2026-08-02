@@ -4,12 +4,22 @@
  * App-level shapes consumed by `/events` and `/events/[event_key]`.
  * Adapted from raw `TBAEvent*` payloads by `src/lib/api/events.ts`.
  */
+export enum EventWebcastType {
+    YouTube = "youtube",
+    Twitch = "twitch",
+    TwitchChannel = "twitch_channel",
+    FacebookLive = "facebook_live",
+    Livestream = "livestream",
+}
 
-export interface EventWebcast {
-    type: string;
+
+export interface WebcastUrl {
+    type: EventWebcastType;
     channel: string;
     date?: string | null;
+    url?: string | null;
 }
+
 
 export interface Event {
     event_key?: string | null;
@@ -19,6 +29,7 @@ export interface Event {
     startDate?: string | null;
     endDate?: string | null;
     teams?: number | null;
+    matchs?: number | null;
     favorite?: boolean | null;
     week?: string | null;
     postalCode?: string | null;
@@ -28,7 +39,7 @@ export interface Event {
     teamsKeys?: string[] | null;
     matchsKeys?: string[] | null;
 
-    webcasts?: EventWebcast[] | null;
+    webcasts?: WebcastUrl[] | null;
 }
 
 export interface EventListItem {// /events

@@ -18,7 +18,6 @@
 
 import { notFound } from "next/navigation";
 import EventKeyClient from "./EventKeyClient";
-import { getEvent } from "@/lib/api/tba";
 import { EventTab } from "@/types/events";
 
 interface EventPageProps {
