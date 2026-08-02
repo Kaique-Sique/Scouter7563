@@ -1,5 +1,14 @@
 "use client";
 
+/**
+ * Error boundary for `/events/[event_key]`.
+ *
+ * Next.js renders this automatically whenever something throws inside
+ * the route (e.g. `getEvent()` in page.tsx rejecting on a TBA outage,
+ * as opposed to `notFound()`, which the sibling `not-found.tsx`
+ * handles instead). Must be a client component — `reset()` re-runs
+ * the segment.
+ */
 export default function Error({
   reset,
 }: {

@@ -1,3 +1,9 @@
+/**
+ * StatCard
+ *
+ * Small metric tile: title + icon on top, big value below. Used on
+ * the dashboard for Teams/Matches/Played/Sync counts.
+ */
 import { ReactNode } from "react";
 
 interface StatCardProps {

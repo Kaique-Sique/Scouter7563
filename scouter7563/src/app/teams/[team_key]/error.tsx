@@ -1,5 +1,7 @@
 "use client";
 
+/** Error boundary for `/teams/[team_key]` — mirrors the events route's
+ *  `error.tsx` (see comments there for how Next.js wires this up). */
 export default function Error({
   reset,
 }: {

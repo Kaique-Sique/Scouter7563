@@ -1,5 +1,12 @@
 "use client";
 
+/**
+ * ProgressCard
+ *
+ * Titled card wrapping a `ProgressBar` with a "current/total (%)"
+ * label. Used on the dashboard for scouting progress. Guards against
+ * divide-by-zero when `total` is 0 (no matches yet).
+ */
 import ProgressBar from "@/components/ui/ProgressBar";
 
 interface ProgressCardProps {

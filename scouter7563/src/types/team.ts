@@ -1,3 +1,11 @@
+/**
+ * Team Screen Types
+ *
+ * App-level shapes consumed by `/teams` and `/teams/[team_key]`.
+ * Adapted from raw `TBATeam*` payloads by `src/lib/api/teams.ts` —
+ * see that file for the null -> undefined bridging rules.
+ */
+
 export interface Team { //  /teams/[team_key]
   team_number: number | null;
   nickname: string | null;

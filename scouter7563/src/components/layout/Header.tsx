@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * Header
+ *
+ * Fixed top bar: hamburger menu (opens `Sidebar`), logo/home link,
+ * and a search box with lightweight typed-shortcut suggestions (team
+ * number -> team page, otherwise search-in-Teams / search-in-Events
+ * links). No backend search — see comments below on `suggestions`.
+ */
 import Image from "next/image";
 import { Menu, Search, User, Users, CalendarDays, ArrowRight } from "lucide-react";
 import Link from "next/link";
@@ -94,10 +102,16 @@ export default function Header({ onMenuClick }: HeaderProps) {
 
   }, []);
 
-  // Sempre que a lista de sugestões muda, volta o destaque pra primeira
-  useEffect(() => {
+  // Sempre que a lista de sugestões muda, volta o destaque pra primeira.
+  // Ajustado durante a renderização (padrão recomendado pelo React para
+  // "resetar estado quando um input muda") em vez de um `useEffect`, que
+  // chamaria `setState` de forma síncrona após o commit e disparuria uma
+  // renderização em cascata extra.
+  const [prevQuery, setPrevQuery] = useState(query);
+  if (query !== prevQuery) {
+    setPrevQuery(query);
     setActiveIndex(0);
-  }, [suggestions]);
+  }
 
   function goTo(href: string) {
     router.push(href);

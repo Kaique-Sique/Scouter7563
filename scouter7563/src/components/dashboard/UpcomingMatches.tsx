@@ -1,3 +1,11 @@
+/**
+ * UpcomingMatches
+ *
+ * Dashboard card listing the next scheduled matches as `MatchRow`s.
+ * Currently always rendered with an empty `matches` list from the
+ * dashboard page — see the TODO in dashboardPageClient.tsx explaining
+ * there's no per-match alliance/status API yet.
+ */
 import MatchRow from "@/components/cards/MatchRowCard";
 
 interface MatchTeam {

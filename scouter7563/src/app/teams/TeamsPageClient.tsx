@@ -1,5 +1,16 @@
 "use client";
 
+/**
+ * TeamsPageClient
+ *
+ * Client half of `/teams`: owns search, favorite-filtering, sorting,
+ * and client-side infinite scroll over the full team list that the
+ * server component (`page.tsx`) already fetched via `getTeamListItem`.
+ *
+ * No further TBA requests happen here — everything below operates on
+ * the `initialTeams` array already in memory.
+ */
+
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Star, Search } from "lucide-react";
 
@@ -12,8 +23,11 @@ interface TeamsPageClientProps {
 
 type SortKey = "Team Number" | "Team Name" | "EPA";
 
+/** How many teams are revealed per infinite-scroll "page". */
 const PAGE_SIZE = 500;
 
+/** Case-insensitive match against nickname, sponsor/org name, team
+ *  number, or team key — whichever the scouter typed. */
 function matchesQuery(team: TeamListItem, query: string): boolean {
     if (!query) return true;
 
@@ -53,6 +67,11 @@ function sortTeams(list: TeamListItem[], sortKey: SortKey): TeamListItem[] {
     }
 }
 
+// NOTE: TeamsPageClientProps is already declared above (line ~19) without
+// `searchInitialValue`. TypeScript merges these two declarations
+// (interface declaration merging) so this still compiles, but it's
+// redundant — the block above should just include `searchInitialValue`
+// directly instead of being re-declared down here.
 interface TeamsPageClientProps {
     initialTeams: TeamListItem[];
     searchInitialValue: string;
@@ -80,6 +99,9 @@ export default function TeamsPageClient({
     }
 
 
+    // Recomputed only when one of its inputs actually changes — avoids
+    // re-filtering/re-sorting the (potentially thousands-long) team list
+    // on every unrelated render.
     const filteredTeams = useMemo(() => {
         const filtered = teams
             .filter((team) => !favoriteOnly || team.favorite)
@@ -89,18 +111,39 @@ export default function TeamsPageClient({
     }, [teams, favoriteOnly, searchQuery, sortKey]);
 
 
+    // Client-side pagination window — only `visibleCount` of
+    // `filteredTeams` are actually rendered at once (rendering
+    // thousands of `TeamCard`s at once is what made `/teams` slow to
+    // begin with; the intersection observer below reveals more as the
+    // scouter scrolls).
     const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
-
-    useEffect(() => {
+    // Any change to the active filter/sort should reset back to the
+    // first page — otherwise a new (smaller) result set could still be
+    // "scrolled past" its own length with stale visibleCount state.
+    //
+    // Adjusted during render (React's recommended pattern for "reset
+    // state when inputs change") instead of inside a `useEffect`, which
+    // would call `setState` synchronously after commit and trigger an
+    // extra cascading render.
+    const [prevFilterKey, setPrevFilterKey] = useState(
+        `${favoriteOnly}:${searchQuery}:${sortKey}`
+    );
+    const filterKey = `${favoriteOnly}:${searchQuery}:${sortKey}`;
+    if (filterKey !== prevFilterKey) {
+        setPrevFilterKey(filterKey);
         setVisibleCount(PAGE_SIZE);
-    }, [favoriteOnly, searchQuery, sortKey]);
+    }
 
     const visibleTeams = filteredTeams.slice(0, visibleCount);
     const hasMore = visibleCount < filteredTeams.length;
 
     const sentinelRef = useRef<HTMLDivElement>(null);
 
+    // Infinite scroll: watch an invisible sentinel div at the bottom of
+    // the list; once it enters the viewport (with 600px of lookahead so
+    // the next page loads before the scouter hits the literal bottom),
+    // reveal one more page of teams.
     useEffect(() => {
         if (!hasMore) return;
 

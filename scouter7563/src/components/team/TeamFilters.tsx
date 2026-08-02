@@ -1,5 +1,17 @@
 "use client";
 
+/**
+ * TeamFilters
+ *
+ * Batch-navigation pill bar for `/teams` — same pattern as
+ * `EventFilters.tsx` (scroll-spy + click-to-scroll), but keyed off
+ * `TeamSectionMeta` batches of 500 (see `groupTeamsByBatch`) instead
+ * of week sections.
+ *
+ * NOTE: not currently rendered by `TeamsPageClient.tsx`, which uses
+ * client-side infinite scroll instead of batch pagination. Left in
+ * place as a ready-to-use alternative UI, not dead code to delete.
+ */
 import { Star } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { TeamSectionMeta } from "@/utils/groupTeamsByBatch";

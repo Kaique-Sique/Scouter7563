@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+/** Route-specific 404 for `/teams/[team_key]`, shown when `getTeam()`
+ *  returns null for an unknown/invalid team key. */
 export default function NotFound() {
   return (
     <main className="flex h-[70vh] flex-col items-center justify-center gap-4">
