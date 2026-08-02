@@ -10,7 +10,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: Scouter7563
+        working-directory: scouter7563
 
     steps:
       - name: Checkout repository
