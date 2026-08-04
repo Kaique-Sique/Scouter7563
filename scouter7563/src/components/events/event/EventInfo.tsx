@@ -1,3 +1,4 @@
+import { resolveFilterType } from "@/utils/groupEventsByWeek";
 
 export interface EventInfoProps {
     location: string | null;
@@ -24,7 +25,7 @@ export default function EventInfo({
                 <InfoRow label="🌎 Country" value={country ?? "No country available."} />
                 <InfoRow label="📍 Location" value={location ?? "No location available."} />
                 <InfoRow label="📅 Date" value={date ?? "No date available."} />
-                <InfoRow label="🏆 Week" value={week ?? "No week available."} />
+                <InfoRow label="🏆 Week" value={resolveFilterType(week ?? "0") ?? "No week available."} />
 
             </div>
         </div>
