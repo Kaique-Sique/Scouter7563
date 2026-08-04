@@ -16,7 +16,42 @@
 
 import Link from "next/link";
 import EventHeader from "@/components/events/event/EventHeader";
-import { EventFull, EventTab } from "@/types/events";
+import { EventFull, EventTab, EventWebcastType, WebcastUrl} from "@/types/events";
+import EventOverview from "./EventOverviewTab";
+import { EventInfoProps } from "@/components/events/event/EventInfo";
+
+
+export const mockInformation: EventInfoProps = {
+    location: "São Paulo",
+    venue: "SESI Vila Leopoldina",
+    date: "Mar 12–15",
+    country: "Brazil",
+    week: "Week 2",
+    teams: 64,
+    matches: 90,
+    awards: 14,
+};
+
+export const mockWebcasts: WebcastUrl[] = [
+    {
+        type: EventWebcastType.YouTube,
+        channel: "Official FIRST Broadcast",
+        date: "Mar 12",
+        url: "https://youtube.com",
+    },
+    {
+        type: EventWebcastType.YouTube,
+        channel: "Official FIRST Broadcast",
+        date: "Mar 13",
+        url: "https://youtube.com",
+    },
+    {
+        type: EventWebcastType.Twitch,
+        channel: "FIRSTinspires",
+        date: "Mar 14",
+        url: "https://twitch.tv/firstinspires",
+    },
+];
 
 interface EventKeyProps {
     eventKey: string;
@@ -42,7 +77,7 @@ function ComingSoon({ label }: { label: string }) {
 function EventTabContent({ eventKey, tab, }: EventKeyProps) {
     switch (tab) {
         case EventTab.Overview:
-            return <ComingSoon label="Overview" />;
+            return <EventOverview information={mockInformation} webcasts={mockWebcasts} />
 
         case EventTab.Matches:
             return <ComingSoon label="Matches" />;
