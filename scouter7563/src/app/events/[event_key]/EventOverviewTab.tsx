@@ -1,17 +1,25 @@
 import UpcomingMatches from "@/components/dashboard/UpcomingMatches";
 import EventInfo, { EventInfoProps } from "@/components/events/event/EventInfo";
 import EventLiveStreams from "@/components/events/event/EventLiveStreams";
-import { WebcastUrl } from "@/types/events";
+import { EventFull,} from "@/types/events";
+import { formatEventDateRange } from "@/utils/formatDates";
 
 interface EventOverviewProps {
-    information: EventInfoProps;
-    webcasts: WebcastUrl[];
+    event: EventFull;
 }
 
 export default function EventOverview({
-    information,
-    webcasts,
+    event,
 }: EventOverviewProps) {
+
+    const information = {
+        location: event.city ?? null,
+        venue: event.location_name ?? null,
+        date: formatEventDateRange(event.startDate ?? null, event.endDate ?? null),
+        country: event.country ?? null,
+        week: event.week ?? null,
+    } as EventInfoProps;
+
     return (
         <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
 
@@ -26,7 +34,7 @@ export default function EventOverview({
 
             <main>
                 <EventLiveStreams
-                    webcasts={webcasts}
+                    webcasts={event.webcasts ?? []}
                 />
 
                 {/* Upcoming Matches */}

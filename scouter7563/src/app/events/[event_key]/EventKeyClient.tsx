@@ -27,9 +27,6 @@ export const mockInformation: EventInfoProps = {
     date: "Mar 12–15",
     country: "Brazil",
     week: "Week 2",
-    teams: 64,
-    matches: 90,
-    awards: 14,
 };
 
 export const mockWebcasts: WebcastUrl[] = [
@@ -74,15 +71,15 @@ function ComingSoon({ label }: { label: string }) {
     );
 }
 
-function EventTabContent({ eventKey, tab, }: EventKeyProps) {
+function EventTabContent({ eventKey, tab, event}: EventKeyProps) {
     switch (tab) {
         case EventTab.Overview:
-            return <EventOverview information={mockInformation} webcasts={mockWebcasts} />
+            return <EventOverview event={event} />
 
         case EventTab.Matches:
             return <ComingSoon label="Matches" />;
 
-        case EventTab.Teams:
+        case EventTab.Teams: 
             return <ComingSoon label="Teams" />;
 
         case EventTab.Rankings:

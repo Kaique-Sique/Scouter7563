@@ -5,9 +5,6 @@ export interface EventInfoProps {
     date: string | null;
     country: string | null;
     week: string | null;
-    teams: number | null;
-    matches: number | null;
-    awards: number | null;
 }
 
 export default function EventInfo({
@@ -16,9 +13,6 @@ export default function EventInfo({
     date,
     country,
     week,
-    teams,
-    matches,
-    awards,
 }: EventInfoProps) {
     return (
         <div className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-lg p-5">
@@ -29,8 +23,8 @@ export default function EventInfo({
             <div className="divide-y divide-slate-700/40">
                 <InfoRow label="🌎 Country" value={country ?? "No country available."} />
                 <InfoRow label="📍 Location" value={location ?? "No location available."} />
-                <InfoRow label="🏟 Venue" value={venue ?? "No venue available."} />
                 <InfoRow label="📅 Date" value={date ?? "No date available."} />
+                <InfoRow label="🏆 Week" value={week ?? "No week available."} />
 
             </div>
         </div>
