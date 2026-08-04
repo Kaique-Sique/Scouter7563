@@ -72,7 +72,7 @@ function buildSectionMeta(id: string): EventSectionMeta {
  * - Se não for numérica, veio de `event.event_type_string` -> procura no
  *   mapa acima, com fallback para "offseason".
  */
-function resolveFilterType(week: string | undefined): string {
+export function resolveFilterType(week: string | undefined): string {
     if (!week) return "offseason";
 
     if (/^\d+$/.test(week)) {
