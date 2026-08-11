@@ -1,24 +1,39 @@
 /**
  * EventRankingsTab
  *
- * Design-only mockup for the "Rankings" tab. Lays out the qual
- * standings table (rank / team / record / RP / avg) that will be
- * populated from TBA's rankings endpoint — currently skeleton rows.
+ * Rankings tab for `/events/[event_key]`. Defaults to `loading = true`
+ * (skeleton) since there's no real data source wired up yet — once
+ * the TBA rankings endpoint is adapted into `EventRankingRow[]`
+ * (`src/types/events.ts`), pass it in:
+ *
+ *   <EventRankingsTab rankings={event.rankings} loading={false} />
  */
 import { ListOrdered } from "lucide-react";
+import { EventRankingRow } from "@/types/events";
+import RankingsTable from "@/components/events/event/rankings/RankingsTable";
 import EmptyTabState from "./EmptyTabState";
 
-const SKELETON_ROWS = 8;
-const COLUMNS = ["Rank", "Team", "Record", "RP", "Avg"];
+interface EventRankingsTabProps {
+    rankings?: EventRankingRow[];
+    loading?: boolean;
+}
 
-export default function EventRankingsTab() {
+export default function EventRankingsTab({ rankings = [], loading = true }: EventRankingsTabProps) {
+    const isEmpty = !loading && rankings.length === 0;
+
     return (
         <div className="space-y-6">
-            <EmptyTabState
-                icon={ListOrdered}
-                title="Rankings not available yet"
-                description="Qualification rankings will populate here once matches have been played."
-            />
+            {(loading || isEmpty) && (
+                <EmptyTabState
+                    icon={ListOrdered}
+                    title={loading ? "Rankings not available yet" : "No rankings yet"}
+                    description={
+                        loading
+                            ? "Qualification rankings will populate here once matches have been played."
+                            : "This event doesn't have qualification rankings yet."
+                    }
+                />
+            )}
 
             <section className="overflow-hidden rounded-2xl border border-slate-800 bg-slate-900">
                 <div className="p-6 pb-0">
@@ -27,34 +42,11 @@ export default function EventRankingsTab() {
                     </h2>
                 </div>
 
-                <div className="mt-5 overflow-x-auto">
-                    <table className="w-full text-left text-sm">
-                        <thead>
-                            <tr className="border-y border-slate-800 text-xs uppercase tracking-wide text-slate-500">
-                                {COLUMNS.map((col) => (
-                                    <th key={col} className="px-6 py-3 font-medium">
-                                        {col}
-                                    </th>
-                                ))}
-                            </tr>
-                        </thead>
-
-                        <tbody>
-                            {Array.from({ length: SKELETON_ROWS }).map((_, i) => (
-                                <tr
-                                    key={i}
-                                    className="animate-pulse border-b border-slate-800/60 last:border-0"
-                                >
-                                    {COLUMNS.map((col) => (
-                                        <td key={col} className="px-6 py-4">
-                                            <div className="h-3.5 w-12 rounded bg-slate-800" />
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                {!isEmpty && (
+                    <div className="mt-5">
+                        <RankingsTable rankings={rankings} loading={loading} />
+                    </div>
+                )}
             </section>
         </div>
     );
