@@ -19,7 +19,7 @@
 import { notFound } from "next/navigation";
 import EventKeyClient from "./EventKeyClient";
 import { EventTab } from "@/types/events";
-import { getEventFull, getEventRankings } from "@/lib/api/events";
+import { getEventAwards, getEventFull, getEventRankings } from "@/lib/api/events";
 import { getTeamSummary } from "@/lib/api/teams";
 
 interface EventPageProps {
@@ -43,10 +43,11 @@ export default async function EventPage({
     // every load wait for two full sequential round-trips instead of one.
     // (The bigger cost is inside `getTeamSummary` itself, which is
     // off-limits here — see the suggestions shared alongside this change.)
-    const [event, teams, rankings] = await Promise.all([
+    const [event, teams, rankings, awards] = await Promise.all([
         getEventFull(event_key),
         getTeamSummary(event_key),
         getEventRankings(event_key),
+        getEventAwards(event_key),
     ]);
 
     if (!event) {
@@ -65,6 +66,7 @@ export default async function EventPage({
             eventKey={event_key}
             event={event}
             tab={validTab}
+            awards={awards}
             teams={teams}
         />
     );

@@ -1,6 +1,6 @@
 import * as tba from "@/lib/api/tba";
 import { DashboardDataEvent } from "@/types/dashboard";
-import { EventFull, EventListItem, EventOption, EventRankingRow, EventWebcastType, WebcastUrl, } from "@/types/events";
+import { EventAward, EventFull, EventListItem, EventOption, EventRankingRow, EventWebcastType, WebcastUrl, } from "@/types/events";
 import { TBAEvent } from "@/types/tba/event";
 
 /**
@@ -263,7 +263,42 @@ export async function getEventRankings(event_key: string): Promise<EventRankingR
         return null;
     }
 
-    return null;
 }
 
 
+export async function getEventAwards(event_key: string): Promise<EventAward[] | null> {
+    try {
+        const awards = await tba.getEventAwards(event_key);
+
+        if (!awards || !awards.length) {
+            return null;
+        }
+
+        const EventAwards: EventAward[] = [];
+
+
+        for (const award of awards) {
+            const awardees = award.recipient_list
+                ?.map(recipient => recipient.awardee)
+                .filter(Boolean)
+                .join(" - ");
+
+            const recipientTeamKeys = award.recipient_list
+                ?.map(recipient => recipient.team_key)
+                .filter(Boolean)
+                .join(" - ");
+
+            EventAwards.push({
+                id: award.award_type.toString(),
+                name: award.name,
+                recipientTeamKey: recipientTeamKeys?.replaceAll("frc", "") || null,
+                awardee: awardees || null,
+            });
+        }
+
+        return EventAwards;
+    }
+    catch {
+        return null;
+    }
+}

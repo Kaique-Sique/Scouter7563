@@ -19,7 +19,7 @@
 import Link from "next/link";
 import { ArrowRight, ClipboardList } from "lucide-react";
 import EventHeader from "@/components/events/event/EventHeader";
-import { EventFull, EventRankingRow, EventTab, EventTeamSummary, EventWebcastType, WebcastUrl} from "@/types/events";
+import { EventAward, EventFull, EventRankingRow, EventTab, EventTeamSummary, EventWebcastType, WebcastUrl} from "@/types/events";
 import EventOverview from "./EventOverviewTab";
 import EventMatchesTab from "./EventMatchesTab";
 import EventTeamsTab from "./EventTeamsTab";
@@ -29,44 +29,16 @@ import { EventInfoProps } from "@/components/events/event/EventInfo";
 import { getTeamSummary } from "@/lib/api/teams";
 
 
-export const mockInformation: EventInfoProps = {
-    location: "São Paulo",
-    venue: "SESI Vila Leopoldina",
-    date: "Mar 12–15",
-    country: "Brazil",
-    week: "Week 2",
-};
-
-export const mockWebcasts: WebcastUrl[] = [
-    {
-        type: EventWebcastType.YouTube,
-        channel: "Official FIRST Broadcast",
-        date: "Mar 12",
-        url: "https://youtube.com",
-    },
-    {
-        type: EventWebcastType.YouTube,
-        channel: "Official FIRST Broadcast",
-        date: "Mar 13",
-        url: "https://youtube.com",
-    },
-    {
-        type: EventWebcastType.Twitch,
-        channel: "FIRSTinspires",
-        date: "Mar 14",
-        url: "https://twitch.tv/firstinspires",
-    },
-];
-
 interface EventKeyProps {
     eventKey: string;
     tab: EventTab;
     event: EventFull;
     teams: EventTeamSummary[] | null;
     rankings: EventRankingRow[] | null;
+    awards: EventAward[] | null;
 }
 
-async function EventTabContent({ eventKey, tab, event, teams, rankings }: EventKeyProps) {
+async function EventTabContent({ eventKey, tab, event, teams, rankings, awards }: EventKeyProps) {
     switch (tab) {
         case EventTab.Overview:
             return <EventOverview event={event} />
@@ -81,7 +53,7 @@ async function EventTabContent({ eventKey, tab, event, teams, rankings }: EventK
             return <EventRankingsTab rankings={rankings ? rankings : []} loading={false}/>;
 
         case EventTab.Awards:
-            return <EventAwardsTab />;
+            return <EventAwardsTab awards={awards ? awards : []} loading={false} />;
 
         case EventTab.Scout:
             // This one doesn't need TBA data at all — it just hands the
@@ -119,11 +91,11 @@ async function EventTabContent({ eventKey, tab, event, teams, rankings }: EventK
     }
 }
 
-export default function EventKeyClient({ eventKey, tab, event, teams, rankings}: EventKeyProps) {
+export default function EventKeyClient({ eventKey, tab, event, teams, rankings, awards}: EventKeyProps) {
     return (
         <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 overflow-x-hidden px-4 py-6 sm:px-6">
             <EventHeader eventKey={eventKey} activeTab={tab} event={event} />
-            <EventTabContent eventKey={eventKey} tab={tab} event={event} teams={teams} rankings={rankings} />
+            <EventTabContent eventKey={eventKey} tab={tab} event={event} teams={teams} rankings={rankings} awards={awards} />
         </main>
     );
 }
