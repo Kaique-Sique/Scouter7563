@@ -7,31 +7,27 @@
  * yet — see the TODO in dashboardPageClient.tsx).
  */
 import TeamBadge from "@/components/ui/TeamBadge";
-
-interface Team {
-  team: number;
-  favorite?: boolean;
-}
-
-type MatchStatus = "live" | "on_field" | "scheduled";
+import { EventAllianceTeam, MatchStatus } from "@/types/events";
 
 interface MatchRowProps {
   match: string;
   status?: MatchStatus;
-  red: Team[];
-  blue: Team[];
+  red: EventAllianceTeam[];
+  blue: EventAllianceTeam[];
 }
 
 const STATUS_LABEL: Record<MatchStatus, string> = {
   live: "Live",
   on_field: "On Field",
   scheduled: "Scheduled",
+  completed: "Final",
 };
 
 const STATUS_STYLE: Record<MatchStatus, string> = {
   live: "bg-red-500/10 text-red-400",
   on_field: "bg-amber-500/10 text-amber-400",
   scheduled: "bg-slate-500/10 text-slate-400",
+  completed: "bg-emerald-500/10 text-emerald-400",
 };
 
 export default function MatchRow({

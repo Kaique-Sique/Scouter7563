@@ -1,6 +1,8 @@
 import * as tba from "@/lib/api/tba";
 import { Team, TeamListItem } from "@/types/team";
 import { TBATeamMedia } from "@/types/tba";
+import { Key } from "lucide-react";
+import { EventTeamSummary } from "@/types/events";
 
 /**
  * Maps a TBA `social_media` entry's `type` to a URL builder. TBA only
@@ -183,3 +185,38 @@ export async function getTeamListItem(year: number = 2025): Promise<TeamListItem
     return null;
   }
 }
+
+/**
+ * 
+ */
+export async function getTeamSummary(event_key: string):
+  Promise<EventTeamSummary[] | null> {
+
+  try {
+    // Was: `getEventTeams()` (1 request) + a *sequential* loop calling
+    // `getTeam()` per team — each of which fires 3 more TBA requests
+    // (profile, social media, avatar-as-base64). For a ~50-team event
+    // that's 1 + 50 round-trips done one at a time, which is what made
+    // the Teams tab so slow to load.
+    //
+    // `EventTeamSummary` only needs number/name/city/country — all of
+    // which TBA's own `/event/{event_key}/teams/simple` endpoint
+    // already returns for the whole event in a SINGLE request. No need
+    // to fetch (or wait on) each team's full profile, socials, or
+    // avatar just to render this summary list.
+    const teamList = await tba.getEventTeamsSimple(event_key);
+
+    return teamList.map((team) => ({
+      team_key: `frc${team.team_number}`,
+      number: team.team_number,
+      name: team.nickname ?? team.name,
+      city: team.city ?? "",
+      country: team.country ?? "",
+      favorite: false,
+    }));
+  }
+  catch {
+    return null;
+  }
+}
+

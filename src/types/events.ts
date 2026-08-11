@@ -75,3 +75,67 @@ export enum EventTab {
     Awards = "awards",
     Scout = "scout",
 }
+
+/**
+ * Data-shape types for the `/events/[event_key]` sub-tabs (Matches /
+ * Teams / Rankings / Awards).
+ *
+ * These are app-level shapes — same spirit as `EventFull` above — meant
+ * to be produced by future adapters in `src/lib/api` from the raw
+ * `TBAEventRankingRow` / `TBAAward` / `TBAMatchSimple` payloads
+ * (`src/types/tba/event.ts`, `src/types/tba/match.ts`). Until that
+ * wiring exists, each tab renders its loading skeleton and these types
+ * only back local mock fixtures (see `mockData.ts` next to the tabs).
+ */
+
+/** One team's badge within a match alliance. Mirrors `MatchRowCard`'s team shape. */
+export interface EventAllianceTeam {
+    team: number;
+    favorite?: boolean;
+}
+
+/** Match status shown as the pill on a match row. */
+export type MatchStatus = "scheduled" | "on_field" | "live" | "completed";
+
+/** A single match row for the Matches tab — ready for `MatchRowCard`. */
+export interface EventMatch {
+    key: string;
+    match: string;
+    status: MatchStatus;
+    red: EventAllianceTeam[];
+    blue: EventAllianceTeam[];
+    redScore?: number | null;
+    blueScore?: number | null;
+    scheduledTime?: string | null;
+}
+
+/** A single team entry for the Teams tab grid. */
+export interface EventTeamSummary {
+    team_key: string | null;
+    number: number | null;
+    name: string | null;
+    city: string | null;
+    country: string | null;
+    favorite: boolean;
+}
+
+/** A single row of the qualification rankings table. */
+export interface EventRankingRow {
+    rank: number;
+    team_key: string;
+    number: number;
+    wins: number;
+    losses: number;
+    ties: number;
+    rankingPoints: number;
+    average: number;
+}
+
+/** A single award entry for the Awards tab. */
+export interface EventAward {
+    id: string;
+    name: string;
+    recipientTeamKey?: string | null;
+    recipientName?: string | null;
+    awardee?: string | null;
+}
