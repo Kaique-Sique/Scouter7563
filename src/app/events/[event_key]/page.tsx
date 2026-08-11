@@ -38,8 +38,15 @@ export default async function EventPage({
     const { event_key } = await params;
     const { tab = EventTab.Overview } = await searchParams;
 
-    const event = await getEventFull(event_key);
-    const teams = await getTeamSummary(event_key);
+    // `getEventFull` and `getTeamSummary` don't depend on each other, so
+    // they're fired together instead of chained — this alone was making
+    // every load wait for two full sequential round-trips instead of one.
+    // (The bigger cost is inside `getTeamSummary` itself, which is
+    // off-limits here — see the suggestions shared alongside this change.)
+    const [event, teams] = await Promise.all([
+        getEventFull(event_key),
+        getTeamSummary(event_key),
+    ]);
 
     if (!event) {
         notFound();
