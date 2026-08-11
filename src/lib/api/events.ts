@@ -1,6 +1,6 @@
 import * as tba from "@/lib/api/tba";
 import { DashboardDataEvent } from "@/types/dashboard";
-import { EventFull, EventListItem, EventOption, EventWebcastType, WebcastUrl, } from "@/types/events";
+import { EventFull, EventListItem, EventOption, EventRankingRow, EventWebcastType, WebcastUrl, } from "@/types/events";
 import { TBAEvent } from "@/types/tba/event";
 
 /**
@@ -164,6 +164,12 @@ export async function getEventList(): Promise<EventListItem[] | null> {
     }
 }
 
+/**
+ * Fetches a list of available events for selection.
+ * 
+ * @return A list of event options, or null if the request fails.
+ * 
+ */
 export async function getEventOptions(): Promise<EventOption[] | null> {
     try {
         // Fetch the date from tba 
@@ -226,3 +232,38 @@ export async function getEventDataDashboard(event_key: string): Promise<Dashboar
         return null;
     }
 }
+
+export async function getEventRankings(event_key: string): Promise<EventRankingRow[] | null> {
+    try {
+        const rankings = await tba.getEventRankings(event_key);
+
+        if (!rankings || !rankings.rankings) {
+            return null;
+        }
+
+        const rankingRows: EventRankingRow[] = [];
+
+
+        for (const ranking of rankings.rankings) {
+            rankingRows.push({
+                team_key: ranking.team_key,
+                number: ranking.team_key ? parseInt(ranking.team_key.replace("frc", "")) : null,
+                rank: ranking.rank,
+                wins: ranking.record?.wins ?? 0,
+                losses: ranking.record?.losses ?? 0,
+                ties: ranking.record?.ties ?? 0,
+                rankingPoints: ranking.sort_orders?.[0] ?? 0,   // RP total (era ranking.dq, errado)
+                average: ranking.qual_average ?? 0,             // era hardcoded em 0
+            });
+        }
+
+        return rankingRows;
+
+    } catch {
+        return null;
+    }
+
+    return null;
+}
+
+

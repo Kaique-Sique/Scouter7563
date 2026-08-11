@@ -19,7 +19,7 @@
 import Link from "next/link";
 import { ArrowRight, ClipboardList } from "lucide-react";
 import EventHeader from "@/components/events/event/EventHeader";
-import { EventFull, EventTab, EventTeamSummary, EventWebcastType, WebcastUrl} from "@/types/events";
+import { EventFull, EventRankingRow, EventTab, EventTeamSummary, EventWebcastType, WebcastUrl} from "@/types/events";
 import EventOverview from "./EventOverviewTab";
 import EventMatchesTab from "./EventMatchesTab";
 import EventTeamsTab from "./EventTeamsTab";
@@ -63,9 +63,10 @@ interface EventKeyProps {
     tab: EventTab;
     event: EventFull;
     teams: EventTeamSummary[] | null;
+    rankings: EventRankingRow[] | null;
 }
 
-async function EventTabContent({ eventKey, tab, event, teams}: EventKeyProps) {
+async function EventTabContent({ eventKey, tab, event, teams, rankings }: EventKeyProps) {
     switch (tab) {
         case EventTab.Overview:
             return <EventOverview event={event} />
@@ -77,7 +78,7 @@ async function EventTabContent({ eventKey, tab, event, teams}: EventKeyProps) {
             return <EventTeamsTab teams={teams ? teams : []} loading={false} />;
 
         case EventTab.Rankings:
-            return <EventRankingsTab/>;
+            return <EventRankingsTab rankings={rankings ? rankings : []} loading={false}/>;
 
         case EventTab.Awards:
             return <EventAwardsTab />;
@@ -118,11 +119,11 @@ async function EventTabContent({ eventKey, tab, event, teams}: EventKeyProps) {
     }
 }
 
-export default function EventKeyClient({ eventKey, tab, event, teams }: EventKeyProps) {
+export default function EventKeyClient({ eventKey, tab, event, teams, rankings}: EventKeyProps) {
     return (
         <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 overflow-x-hidden px-4 py-6 sm:px-6">
             <EventHeader eventKey={eventKey} activeTab={tab} event={event} />
-            <EventTabContent eventKey={eventKey} tab={tab} event={event} teams={teams} />
+            <EventTabContent eventKey={eventKey} tab={tab} event={event} teams={teams} rankings={rankings} />
         </main>
     );
 }

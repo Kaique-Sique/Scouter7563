@@ -121,14 +121,14 @@ export interface EventTeamSummary {
 
 /** A single row of the qualification rankings table. */
 export interface EventRankingRow {
-    rank: number;
-    team_key: string;
-    number: number;
-    wins: number;
-    losses: number;
-    ties: number;
-    rankingPoints: number;
-    average: number;
+    rank: number | null;
+    team_key: string | null;
+    number: number | null;
+    wins: number | null;
+    losses: number | null;
+    ties: number | null;
+    rankingPoints: number | null;
+    average: number | null;
 }
 
 /** A single award entry for the Awards tab. */
