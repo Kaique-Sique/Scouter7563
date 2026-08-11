@@ -74,7 +74,7 @@ async function EventTabContent({ eventKey, tab, event, teams}: EventKeyProps) {
             return <EventMatchesTab  />;
 
         case EventTab.Teams:
-            return <EventTeamsTab teams={teams ? teams : []} loading={true} />;
+            return <EventTeamsTab teams={teams ? teams : []} loading={false} />;
 
         case EventTab.Rankings:
             return <EventRankingsTab/>;
