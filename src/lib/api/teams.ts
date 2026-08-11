@@ -1,6 +1,8 @@
 import * as tba from "@/lib/api/tba";
 import { Team, TeamListItem } from "@/types/team";
 import { TBATeamMedia } from "@/types/tba";
+import { Key } from "lucide-react";
+import { EventTeamSummary } from "@/types/events";
 
 /**
  * Maps a TBA `social_media` entry's `type` to a URL builder. TBA only
@@ -183,3 +185,36 @@ export async function getTeamListItem(year: number = 2025): Promise<TeamListItem
     return null;
   }
 }
+
+/**
+ * 
+ */
+export async function getTeamSummary(event_key: string):
+  Promise<EventTeamSummary[] | null> {
+
+  try {
+    const teamList = await tba.getEventTeams(event_key);
+
+
+    let TeamSummaryList: EventTeamSummary[] = [];
+
+    for (const teamKey of teamList) {
+      const team = await getTeam(teamKey.key);
+      if (team) {
+        TeamSummaryList.push({
+          team_key:  `frc${team.team_number}`,
+          number: team.team_number,
+          name: team.nickname,
+          city: team.city ? team.city : "",
+          country: team.country ? team.country : "",
+          favorite: false,
+        });
+      }
+    }
+    return TeamSummaryList;
+  }
+  catch {
+    return null;
+  }
+}
+

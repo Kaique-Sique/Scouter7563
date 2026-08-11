@@ -26,6 +26,7 @@ import EventTeamsTab from "./EventTeamsTab";
 import EventRankingsTab from "./EventRankingsTab";
 import EventAwardsTab from "./EventAwardsTab";
 import { EventInfoProps } from "@/components/events/event/EventInfo";
+import { getTeamSummary } from "@/lib/api/teams";
 
 
 export const mockInformation: EventInfoProps = {
@@ -63,19 +64,20 @@ interface EventKeyProps {
     event: EventFull;
 }
 
-function EventTabContent({ eventKey, tab, event}: EventKeyProps) {
+async function EventTabContent({ eventKey, tab, event}: EventKeyProps) {
     switch (tab) {
         case EventTab.Overview:
             return <EventOverview event={event} />
 
         case EventTab.Matches:
-            return <EventMatchesTab />;
+            return <EventMatchesTab  />;
 
         case EventTab.Teams:
-            return <EventTeamsTab />;
+            const teams = await getTeamSummary(event.event_key ?? "");
+            return <EventTeamsTab teams={teams ? teams : []} loading={false} />;
 
         case EventTab.Rankings:
-            return <EventRankingsTab />;
+            return <EventRankingsTab/>;
 
         case EventTab.Awards:
             return <EventAwardsTab />;

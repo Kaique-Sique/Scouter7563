@@ -111,12 +111,12 @@ export interface EventMatch {
 
 /** A single team entry for the Teams tab grid. */
 export interface EventTeamSummary {
-    team_key: string;
-    number: number;
-    name?: string | null;
-    city?: string | null;
-    country?: string | null;
-    favorite?: boolean;
+    team_key: string | null;
+    number: number | null;
+    name: string | null;
+    city: string | null;
+    country: string | null;
+    favorite: boolean;
 }
 
 /** A single row of the qualification rankings table. */
