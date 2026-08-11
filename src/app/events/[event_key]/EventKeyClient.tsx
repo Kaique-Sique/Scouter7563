@@ -19,7 +19,7 @@
 import Link from "next/link";
 import { ArrowRight, ClipboardList } from "lucide-react";
 import EventHeader from "@/components/events/event/EventHeader";
-import { EventFull, EventTab, EventWebcastType, WebcastUrl} from "@/types/events";
+import { EventFull, EventTab, EventTeamSummary, EventWebcastType, WebcastUrl} from "@/types/events";
 import EventOverview from "./EventOverviewTab";
 import EventMatchesTab from "./EventMatchesTab";
 import EventTeamsTab from "./EventTeamsTab";
@@ -62,9 +62,10 @@ interface EventKeyProps {
     eventKey: string;
     tab: EventTab;
     event: EventFull;
+    teams: EventTeamSummary[] | null;
 }
 
-async function EventTabContent({ eventKey, tab, event}: EventKeyProps) {
+async function EventTabContent({ eventKey, tab, event, teams}: EventKeyProps) {
     switch (tab) {
         case EventTab.Overview:
             return <EventOverview event={event} />
@@ -73,8 +74,7 @@ async function EventTabContent({ eventKey, tab, event}: EventKeyProps) {
             return <EventMatchesTab  />;
 
         case EventTab.Teams:
-            const teams = await getTeamSummary(event.event_key ?? "");
-            return <EventTeamsTab teams={teams ? teams : []} loading={false} />;
+            return <EventTeamsTab teams={teams ? teams : []} loading={true} />;
 
         case EventTab.Rankings:
             return <EventRankingsTab/>;
@@ -118,11 +118,11 @@ async function EventTabContent({ eventKey, tab, event}: EventKeyProps) {
     }
 }
 
-export default function EventKeyClient({ eventKey, tab, event }: EventKeyProps) {
+export default function EventKeyClient({ eventKey, tab, event, teams }: EventKeyProps) {
     return (
         <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 overflow-x-hidden px-4 py-6 sm:px-6">
             <EventHeader eventKey={eventKey} activeTab={tab} event={event} />
-            <EventTabContent eventKey={eventKey} tab={tab} event={event} />
+            <EventTabContent eventKey={eventKey} tab={tab} event={event} teams={teams} />
         </main>
     );
 }
