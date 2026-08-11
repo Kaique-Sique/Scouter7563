@@ -24,7 +24,7 @@ export default function AwardRow({ award }: AwardRowProps) {
                 </p>
 
                 <p className="mt-0.5 text-xs text-slate-400">
-                    {award.recipientName ?? award.awardee ?? "Recipient TBD"}
+                    {award.recipientName ?? award.awardee ?? award.recipientTeamKey?.replace("frc", "") ?? "Unknown recipient"}
                 </p>
             </div>
         </div>
