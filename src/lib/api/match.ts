@@ -194,7 +194,18 @@ export async function getMatchsEvent(eventKey: string) : Promise<EventMatch[] | 
       eventMatchs.push({
         key: match.key,
         match: formatMatchLabel(match.comp_level, match.match_number, match.key),
-        status: match.actual_time ? MatchStatus.COMPLETED : MatchStatus.SCHEDULED,
+        compLevel: match.comp_level,
+        // `actual_time` is set as soon as the match is *played*, but TBA
+        // only finishes scoring/reviewing it at `post_result_time` — using
+        // `actual_time` alone was marking every played-but-not-yet-reviewed
+        // match as COMPLETED ("Final") too early. `post_result_time` is the
+        // real "this match is done" signal; `actual_time` alone just means
+        // it's on the field / awaiting result.
+        status: match.post_result_time
+          ? MatchStatus.COMPLETED
+          : match.actual_time
+            ? MatchStatus.ON_FIELD
+            : MatchStatus.SCHEDULED,
         red: await getEventAlliancesTeams(match.alliances.red.team_keys),
         blue: await getEventAlliancesTeams(match.alliances.blue.team_keys),
         redScore: match.alliances.red.score,

@@ -4,6 +4,8 @@
  * App-level shapes consumed by `/events` and `/events/[event_key]`.
  * Adapted from raw `TBAEvent*` payloads by `src/lib/api/events.ts`.
  */
+import { CompetitionLevel } from "@/types/tba/common";
+
 export enum EventWebcastType {
     YouTube = "youtube",
     Twitch = "twitch",
@@ -106,6 +108,9 @@ export enum MatchStatus {
 export interface EventMatch {
     key: string;
     match: string | null;
+    /** TBA `comp_level` ("qm" | "ef" | "qf" | "sf" | "f") — drives the
+     *  Qualification / Playoffs split on the Matches tab. */
+    compLevel: CompetitionLevel | null;
     status: MatchStatus | null;
     red: EventAllianceTeam[]  | null;
     blue: EventAllianceTeam[] | null;

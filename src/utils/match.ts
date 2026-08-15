@@ -22,6 +22,7 @@ export function formatMatchLabel(
   // "qm12", then drop the 2-letter level prefix to get just "12".
   let adition = key ? key.slice(key.indexOf("_") + 1) : null;
   adition = adition ? adition.slice(2) : null;
+  adition = adition ? adition.replace("m1", "") : null;
 
   switch (competitionLevel) {
     case "qm":
@@ -68,4 +69,73 @@ export function formatCompetitionLevel(
     default:
       return "";
   }
+}
+
+/**
+ * `comp_level` codes in the order they're actually played within an event
+ * — qualifications first, then the playoff bracket rounds.
+ */
+const COMP_LEVEL_ORDER: Record<CompetitionLevel, number> = {
+  qm: 0,
+  ef: 1,
+  qf: 2,
+  sf: 3,
+  f: 4,
+};
+
+/** The two groups the Matches tab splits into: everything that isn't a
+ *  qualification match ("qm") is a playoff match ("ef" / "qf" / "sf" / "f"). */
+export type MatchBracket = "qualification" | "playoff";
+
+export function getMatchBracket(
+  compLevel: CompetitionLevel | null | undefined
+): MatchBracket {
+  return compLevel === "qm" ? "qualification" : "playoff";
+}
+
+/**
+ * Sorts matches in the order they're actually run at the event: by
+ * `scheduledTime` first (the real chronological order TBA predicts/records
+ * for the match), falling back to comp level + match number for matches
+ * that don't have a time yet (so a freshly-generated playoff bracket still
+ * renders in bracket order instead of jumping around).
+ */
+export function sortMatchesByExecutionOrder<T extends {
+  key: string;
+  compLevel: CompetitionLevel | null;
+  scheduledTime: string | null;
+}>(matches: T[]): T[] {
+  return [...matches].sort((a, b) => {
+    const aTime = a.scheduledTime ? Number(a.scheduledTime) : null;
+    const bTime = b.scheduledTime ? Number(b.scheduledTime) : null;
+
+    const aValid = aTime !== null && !Number.isNaN(aTime);
+    const bValid = bTime !== null && !Number.isNaN(bTime);
+
+    if (aValid && bValid && aTime !== bTime) {
+      return (aTime as number) - (bTime as number);
+    }
+
+    // No usable time on one/both sides — fall back to bracket order.
+    if (aValid !== bValid) {
+      return aValid ? -1 : 1;
+    }
+
+    const aLevel = a.compLevel ? COMP_LEVEL_ORDER[a.compLevel] : 0;
+    const bLevel = b.compLevel ? COMP_LEVEL_ORDER[b.compLevel] : 0;
+
+    if (aLevel !== bLevel) {
+      return aLevel - bLevel;
+    }
+
+    return matchNumberFromKey(a.key) - matchNumberFromKey(b.key);
+  });
+}
+
+/** Pulls the trailing numeric part out of a match key (`"...qm12"` -> `12`,
+ *  `"...sf1m2"` -> `2`) for use as a last-resort sort tiebreaker. */
+function matchNumberFromKey(key: string | null | undefined): number {
+  if (!key) return 0;
+  const digits = key.match(/(\d+)(?!.*\d)/);
+  return digits ? Number(digits[1]) : 0;
 }
