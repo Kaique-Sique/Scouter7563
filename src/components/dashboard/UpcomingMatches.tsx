@@ -48,7 +48,7 @@ export default function UpcomingMatches({
 
         {matches.map((match) => (
             <MatchRow
-                key={match.key}
+                matchKey={match.key}
                 match={match.match}
                 status={match.status}
                 red={match.red}

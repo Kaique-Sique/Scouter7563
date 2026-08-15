@@ -24,11 +24,13 @@ export default function MatchesList({ matches, loading }: MatchesListProps) {
         <div className="space-y-4">
             {matches.map((match) => (
                 <MatchRow
-                    key={match.key}
+                    matchKey={match.key}
                     match={match.match}
                     status={match.status}
                     red={match.red ?? []}
                     blue={match.blue ?? []}
+                    blueScore={match.blueScore ?? null}
+                    redScore={match.redScore ?? null}
                 />
             ))}
         </div>
