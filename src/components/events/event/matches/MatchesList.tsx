@@ -27,8 +27,8 @@ export default function MatchesList({ matches, loading }: MatchesListProps) {
                     key={match.key}
                     match={match.match}
                     status={match.status}
-                    red={match.red}
-                    blue={match.blue}
+                    red={match.red ?? []}
+                    blue={match.blue ?? []}
                 />
             ))}
         </div>

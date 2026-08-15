@@ -10,8 +10,8 @@ import TeamBadge from "@/components/ui/TeamBadge";
 import { EventAllianceTeam, MatchStatus } from "@/types/events";
 
 interface MatchRowProps {
-  match: string;
-  status?: MatchStatus;
+  match: string | null;
+  status?: MatchStatus | null;
   red: EventAllianceTeam[];
   blue: EventAllianceTeam[];
 }

@@ -1,5 +1,8 @@
 import * as tba from "@/lib/api/tba";
+import { EventAllianceTeam, EventMatch, MatchStatus } from "@/types/events";
 import { AllianceTeam, MatchAlliances, MatchOption } from "@/types/scout";
+import { formatMatchLabel } from "@/utils/match";
+import { promises } from "node:timers";
 
 /* -------------------------------------------------------------------------- */
 /*                                  Constants                                 */
@@ -115,7 +118,7 @@ export async function getMatchAlliances(
  * depend on each other — and pairs each team with its station label by
  * array position (see `RED_STATIONS` / `BLUE_STATIONS` above).
  */
-async function getAllianceTeams(
+export async function getAllianceTeams(
   teamKeys: string[],
   stations: readonly string[],
   year: number
@@ -144,4 +147,75 @@ async function getAllianceTeams(
       };
     })
   );
+}
+
+
+/**
+ * Teamskeys come in `sting[]` and it returns `EventAllianceTeam[]`
+ * 
+ * @TODO: favorite boolean is always false, test favorite will be add soon
+ * 
+ * @param Teams string array from teams keys it's converted in `number[]`
+ * to use on EventAllianceTeam type 
+ * 
+ * @returns `EventAllianceTeam[]` [team: number(team number), favorite: boolean]
+ */
+async function getEventAlliancesTeams(
+  Teams: string[]
+): Promise<EventAllianceTeam[] | null> {
+  try {
+    const allianceTeams: EventAllianceTeam[] = []
+    for(const team of Teams)
+    {
+      allianceTeams.push({
+        team: Number(team.replace("frc", "")), favorite: false,
+      })
+    }
+
+    return allianceTeams;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * fetchs all matchs from an event 
+ * @param eventKey 
+ * @returns 
+ */
+export async function getMatchsEvent(eventKey: string) : Promise<EventMatch[] | null> {
+  try {
+    const matchs = await tba.getEventMatches(eventKey);
+
+    const eventMatchs: EventMatch[] = [];
+
+    for (const match of matchs)
+    {
+      eventMatchs.push({
+        key: match.key,
+        match: formatMatchLabel(match.comp_level, match.match_number, match.key),
+        compLevel: match.comp_level,
+        // `actual_time` is set as soon as the match is *played*, but TBA
+        // only finishes scoring/reviewing it at `post_result_time` — using
+        // `actual_time` alone was marking every played-but-not-yet-reviewed
+        // match as COMPLETED ("Final") too early. `post_result_time` is the
+        // real "this match is done" signal; `actual_time` alone just means
+        // it's on the field / awaiting result.
+        status: match.post_result_time
+          ? MatchStatus.COMPLETED
+          : match.actual_time
+            ? MatchStatus.ON_FIELD
+            : MatchStatus.SCHEDULED,
+        red: await getEventAlliancesTeams(match.alliances.red.team_keys),
+        blue: await getEventAlliancesTeams(match.alliances.blue.team_keys),
+        redScore: match.alliances.red.score,
+        blueScore: match.alliances.blue.score,
+        scheduledTime: `${match.predicted_time}`,
+      });
+    }
+
+    return eventMatchs;
+  } catch {
+    return null;
+  }
 }
