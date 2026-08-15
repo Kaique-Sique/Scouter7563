@@ -20,14 +20,14 @@ const STATUS_LABEL: Record<MatchStatus, string> = {
   live: "Live",
   on_field: "On Field",
   scheduled: "Scheduled",
-  completed: "Final",
+  completed: "Completed",
 };
 
 const STATUS_STYLE: Record<MatchStatus, string> = {
   live: "bg-red-500/10 text-red-400",
   on_field: "bg-amber-500/10 text-amber-400",
   scheduled: "bg-slate-500/10 text-slate-400",
-  completed: "bg-emerald-500/10 text-emerald-400",
+  completed: "bg-blue-500/10 text-blue-400",
 };
 
 export default function MatchRow({
