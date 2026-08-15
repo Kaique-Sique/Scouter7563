@@ -42,14 +42,6 @@ function env(name: string): string {
     return value;
 }
 
-export const dbConfig = {
-    get NAME(): string { return env("DB_NAME"); },
-    get USER(): string { return env("DB_USER"); },
-    get PASSWORD(): string { return env("DB_PASSWORD"); },
-    get HOST(): string { return env("DB_HOST"); },
-    get PORT(): string { return env("DB_PORT"); },
-};
-
 export const tbaConfig = {
     get KEY(): string { return env("TBA_KEY"); },
     get BASE_URL(): string { return env("TBA_BASE_URL"); },

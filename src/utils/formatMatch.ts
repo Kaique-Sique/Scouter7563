@@ -22,6 +22,11 @@ export function formatMatchLabel(
   // "qm12", then drop the 2-letter level prefix to get just "12".
   let adition = key ? key.slice(key.indexOf("_") + 1) : null;
   adition = adition ? adition.slice(2) : null;
+<<<<<<< Updated upstream:src/utils/match.ts
+=======
+  adition = adition ? adition.replace("m1", "") : null;
+  adition = adition ? adition.replace("m", "") : null;
+>>>>>>> Stashed changes:src/utils/formatMatch.ts
 
   switch (competitionLevel) {
     case "qm":

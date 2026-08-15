@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 
 import { MatchOption } from "@/types/scout";
-import { formatMatchLabel } from "@/utils/match";
+import { formatMatchLabel } from "@/utils/formatMatch";
 
 interface MatchSelectorProps {
   matches: MatchOption[] | null;
