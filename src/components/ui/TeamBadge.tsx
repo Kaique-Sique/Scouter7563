@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Star } from "lucide-react";
 
 interface TeamBadgeProps {
-  team: number;
-  alliance: "red" | "blue";
-  favorite?: boolean;
+  team: number | null;
+  alliance: "red" | "blue" | null;
+  favorite?: boolean | null;
 }
 
 export default function TeamBadge({

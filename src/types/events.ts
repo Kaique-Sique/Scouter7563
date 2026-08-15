@@ -90,23 +90,28 @@ export enum EventTab {
 
 /** One team's badge within a match alliance. Mirrors `MatchRowCard`'s team shape. */
 export interface EventAllianceTeam {
-    team: number;
-    favorite?: boolean;
+    team: number | null;
+    favorite?: boolean| null;
 }
 
 /** Match status shown as the pill on a match row. */
-export type MatchStatus = "scheduled" | "on_field" | "live" | "completed";
+export enum MatchStatus {
+    SCHEDULED = "scheduled",
+    ON_FIELD = "on_field",
+    LIVE = "live",
+    COMPLETED = "completed",
+}
 
 /** A single match row for the Matches tab — ready for `MatchRowCard`. */
 export interface EventMatch {
     key: string;
-    match: string;
-    status: MatchStatus;
-    red: EventAllianceTeam[];
-    blue: EventAllianceTeam[];
+    match: string | null;
+    status: MatchStatus | null;
+    red: EventAllianceTeam[]  | null;
+    blue: EventAllianceTeam[] | null;
     redScore?: number | null;
     blueScore?: number | null;
-    scheduledTime?: string | null;
+    scheduledTime: string | null;
 }
 
 /** A single team entry for the Teams tab grid. */

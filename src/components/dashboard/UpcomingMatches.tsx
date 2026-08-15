@@ -7,6 +7,7 @@
  * there's no per-match alliance/status API yet.
  */
 import MatchRow from "@/components/cards/MatchRowCard";
+import { MatchStatus } from "@/types/events";
 
 interface MatchTeam {
   team: number;
@@ -16,7 +17,7 @@ interface MatchTeam {
 export interface Match {
   key: string;
   match: string;
-  status: "live" | "on_field" | "scheduled";
+  status: MatchStatus | null;
   red: MatchTeam[];
   blue: MatchTeam[];
 }
