@@ -25,8 +25,6 @@ import EventMatchesTab from "./EventMatchesTab";
 import EventTeamsTab from "./EventTeamsTab";
 import EventRankingsTab from "./EventRankingsTab";
 import EventAwardsTab from "./EventAwardsTab";
-import { EventInfoProps } from "@/components/events/event/EventInfo";
-import { getTeamSummary } from "@/lib/api/teams";
 
 
 interface EventKeyProps {
